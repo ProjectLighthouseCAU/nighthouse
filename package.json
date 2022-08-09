@@ -1,0 +1,17 @@
+{
+  "name": "litehouse",
+  "version": "0.0.1",
+  "description": "Lightweight Project Lighthouse client for JavaScript",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@msgpack/msgpack": "^2.7.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
