@@ -31,3 +31,5 @@ npm run serve
 ```
 
 to run a development web server directly and automatically rebuild in the background.
+
+> Note: You can run these commands from the top-level package too by including `--workspace examples/browser` or `-w examples/browser` for short.
