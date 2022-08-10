@@ -4,8 +4,8 @@
  */
 export interface Transport {
   /** Sends the given message. */
-  send<T>(message: T): Promise<void>;
+  send(message: Uint8Array): Promise<void>;
 
   /** Registers the given handler for incoming messages. */
-  onReceive<T>(handler: (message: T) => void): void;
+  onReceive(handler: (message: Uint8Array) => void): void;
 }

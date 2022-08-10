@@ -6,6 +6,7 @@
   "compilerOptions": {
     "tsBuildInfoFile": "../../out/browser/compile.tsbuildinfo",
     "rootDir": ".",
-    "outDir": "../../out/browser"
+    "outDir": "../../out/browser",
+    "lib": ["ES2015", "DOM"]
   }
 }
