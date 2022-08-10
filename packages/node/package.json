@@ -1,0 +1,21 @@
+{
+  "name": "litehouse-node",
+  "version": "0.0.1",
+  "description": "Lightweight Project Lighthouse client for Node.js",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "watch": "tsc -b tsconfig.json -w",
+    "prepare": "npm run build"
+  },
+  "author": "fwcd",
+  "license": "MIT",
+  "dependencies": {
+    "@msgpack/msgpack": "^2.7.2",
+    "litehouse-common": "^0.0.1",
+    "ws": "^8.8.1"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.3",
+    "typescript": "^4.7.4"
+  }
+}

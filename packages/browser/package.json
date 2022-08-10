@@ -1,9 +1,7 @@
 {
-  "name": "litehouse",
+  "name": "litehouse-browser",
   "version": "0.0.1",
-  "description": "Lightweight Project Lighthouse client for JavaScript",
-  "private": true,
-  "workspaces": ["packages/*"],
+  "description": "Lightweight Project Lighthouse client for the browser",
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",
@@ -12,6 +10,9 @@
   "author": "fwcd",
   "license": "MIT",
   "dependencies": {
-    "@msgpack/msgpack": "^2.7.2"
+    "litehouse-common": "^0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
   }
 }

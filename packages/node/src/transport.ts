@@ -1,4 +1,4 @@
-import { Transport } from "../common";
+import { Transport } from "litehouse-common";
 import { WebSocket } from "ws";
 
 /** A transport that uses the 'ws' library for Node. */

@@ -1,7 +1,7 @@
-import { Transport } from "../common";
+import { Transport } from "litehouse-common";
 
 /** A transport that uses browser WebSockets. */
-export class BrowserTransport implements Transport {
+export class BrowserWebSocketTransport implements Transport {
   constructor(private readonly ws: WebSocket) {}
 
   async send(message: Uint8Array): Promise<void> {

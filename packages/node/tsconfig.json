@@ -4,9 +4,9 @@
     { "path": "../common/tsconfig.json" },
   ],
   "compilerOptions": {
-    "tsBuildInfoFile": "../../out/node/compile.tsbuildinfo",
+    "tsBuildInfoFile": "./out/compile.tsbuildinfo",
     "rootDir": ".",
-    "outDir": "../../out/node",
+    "outDir": "./out",
     "types": [
       "node"
     ]

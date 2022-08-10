@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "references": [
-    { "path": "./src/browser/tsconfig.json" },
-    { "path": "./src/common/tsconfig.json" },
-    { "path": "./src/node/tsconfig.json" }
+    { "path": "./packages/browser/tsconfig.json" },
+    { "path": "./packages/common/tsconfig.json" },
+    { "path": "./packages/node/tsconfig.json" }
   ],
   "files": []
 }
