@@ -5,7 +5,7 @@
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./lib/compile.tsbuildinfo",
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "./lib",
     "lib": ["ES2015", "DOM"]
   }

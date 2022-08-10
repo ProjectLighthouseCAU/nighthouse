@@ -5,7 +5,7 @@
   ],
   "compilerOptions": {
     "tsBuildInfoFile": "./lib/compile.tsbuildinfo",
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "./lib",
     "types": [
       "node"

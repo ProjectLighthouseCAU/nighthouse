@@ -2,6 +2,8 @@
   "name": "litehouse-node",
   "version": "0.0.1",
   "description": "Lightweight Project Lighthouse client for Node.js",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",

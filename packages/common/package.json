@@ -2,6 +2,8 @@
   "name": "litehouse-common",
   "version": "0.0.1",
   "description": "Shared Project Lighthouse client structures",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",
