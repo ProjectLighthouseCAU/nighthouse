@@ -1,9 +1,10 @@
-import { Lighthouse } from "../common";
+import { Lighthouse, Logger, LogLevel, NoopLogHandler, Options } from "../common";
 import { BrowserTransport } from "./transport";
 
 /** Connects to the lighthouse at the given (ws/wss) URL. */
-export function connect(url: string): Lighthouse {
-  const ws = new WebSocket(url);
+export function connect(opts: Options): Lighthouse {
+  const ws = new WebSocket(opts.url);
   const transport = new BrowserTransport(ws);
-  return new Lighthouse(transport);
+  const logger = new Logger(opts.logLevel ?? LogLevel.Info, opts.logHandler ?? new NoopLogHandler());
+  return new Lighthouse(transport, logger);
 }
