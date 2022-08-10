@@ -3,8 +3,8 @@
   "version": "0.0.1",
   "description": "Lightweight Project Lighthouse client for JavaScript",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
+    "build": "tsc -b tsconfig.json",
+    "watch": "tsc -b tsconfig.json -w"
   },
   "author": "",
   "license": "ISC",

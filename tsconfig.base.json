@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "composite": true
+    "composite": true,
+    "incremental": true
   }
 }
