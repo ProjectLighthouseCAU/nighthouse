@@ -1,6 +1,8 @@
 import { Transport } from "litehouse-common";
 import { WebSocket } from "ws";
 
+export * from "litehouse-common";
+
 /** A transport that uses the 'ws' library for Node. */
 export class NodeTransport implements Transport {
   constructor(private readonly ws: WebSocket) {}

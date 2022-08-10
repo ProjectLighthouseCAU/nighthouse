@@ -1,4 +1,4 @@
-import * as litehouse from "litehouse/browser";
+import * as litehouse from "litehouse-browser";
 
 addEventListener('load', () => {
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
@@ -7,7 +7,7 @@ addEventListener('load', () => {
   const connectButton = document.getElementById('lighthouse-connect');
 
   connectButton.addEventListener('click', async () => {
-    const lh = await litehouse.connect(urlField.value);
+    const lh = await litehouse.connect({ url: urlField.value });
     console.log('Connected!');
   });
 });
