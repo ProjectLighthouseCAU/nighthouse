@@ -5,6 +5,6 @@ import { BrowserTransport } from "./transport";
 export function connect(opts: Options): Lighthouse {
   const ws = new WebSocket(opts.url);
   const transport = new BrowserTransport(ws);
-  const logger = new Logger(opts.logLevel ?? LogLevel.Info, opts.logHandler ?? new NoopLogHandler());
+  const logger = new Logger(opts.logHandler);
   return new Lighthouse(transport, logger);
 }

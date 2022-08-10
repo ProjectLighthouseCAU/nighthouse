@@ -14,7 +14,7 @@ export interface LogHandler {
 
 /** A simple logger that swallows the messages and does nothing. */
 export class NoopLogHandler implements LogHandler {
-  log(level: LogLevel, msg: string): void {
+  log(): void {
     // Do nothing
   }
 }
@@ -22,7 +22,7 @@ export class NoopLogHandler implements LogHandler {
 /** A simple logger that logs to the console. */
 export class ConsoleLogHandler implements LogHandler {
   log(level: LogLevel, msg: string): void {
-    const formatted = `[${this.formatLevel(level)}] msg`;
+    const formatted = `[${this.formatLevel(level)}] ${msg}`;
     if (level >= LogLevel.Error) {
       console.error(formatted);
     } else {
@@ -40,18 +40,27 @@ export class ConsoleLogHandler implements LogHandler {
   }
 }
 
-/** A wrapper around a log handler that filters by level. */
-export class Logger {
+/** A log handler wrapper that filters by level. */
+export class LeveledLogHandler implements LogHandler {
   constructor(
     private readonly level: LogLevel,
-    private readonly handler: LogHandler,
+    private readonly handler: LogHandler
   ) {}
 
-  /** Logs the given message at the given level. */
   log(level: LogLevel, msg: string): void {
     if (level >= this.level) {
       this.handler.log(level, msg);
     }
+  }
+}
+
+/** A wrapper around a log handler with some convenience methods. */
+export class Logger implements LogHandler {
+  constructor(private readonly handler: LogHandler) {}
+
+  /** Logs the given message at the given level. */
+  log(level: LogLevel, msg: string): void {
+    this.handler.log(level, msg);
   }
 
   /** Logs the given message at the debug level. */

@@ -4,8 +4,6 @@ import { LogHandler, LogLevel } from "./log";
 export interface Options {
   /** The url of the lighthouse WebSocket server. */
   url: string;
-  /** The level to log at. */
-  logLevel?: LogLevel;
   /** A consumer of log messages. */
   logHandler?: LogHandler;
 }
