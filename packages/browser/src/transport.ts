@@ -9,16 +9,20 @@ export class BrowserWebSocketTransport implements Transport {
     this.ws.addEventListener('error', e => {
       logger.error(`WebSocket error: ${e}`);
     });
+    this.ws.addEventListener('close', () => {
+      logger.info(`WebSocket closed`);
+    });
   }
 
   async send(message: Uint8Array): Promise<void> {
-    this.ws.send(message);
+    await this.ws.send(message);
   }
 
   async ready(): Promise<void> {
-    if (this.ws.readyState === WebSocket.CONNECTING) {
+    if (this.ws.readyState === WebSocket.CONNECTING || this.ws.readyState === WebSocket.CLOSED) {
       await new Promise<void>(resolve => {
         this.ws.addEventListener('open', () => {
+          this.logger.info("Open");
           resolve();
         });
       });

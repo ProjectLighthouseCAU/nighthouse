@@ -23,7 +23,7 @@ export class Lighthouse {
 
   /** A promise that resolves once ready. */
   async ready(): Promise<void> {
-    this.transport.ready();
+    await this.transport.ready();
   }
 
   // TODO: Input handling
@@ -51,14 +51,14 @@ export class Lighthouse {
     };
     const raw = this.coder.encode(message);
     const responsePromise = this.receiveResponse(message.REID);
-    await this.transport.send(raw);
+    await this.send(raw);
     return await responsePromise;
   }
 
   /** Sends an arbitrary message. */
   async send<T>(message: T): Promise<void> {
     const raw = this.coder.encode(message);
-    this.transport.send(raw);
+    await this.transport.send(raw);
   }
   
   /** Asynchronously receives a response for the given request id. */

@@ -13,7 +13,7 @@ export class NodeWebSocketTransport implements Transport {
   }
 
   async send(message: Uint8Array): Promise<void> {
-    this.ws.send(message);
+    await this.ws.send(message);
   }
 
   async ready(): Promise<void> {

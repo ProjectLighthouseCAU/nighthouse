@@ -20,7 +20,7 @@ addEventListener('load', () => {
 
     // Send some colors
     const values = new Uint8Array(lighthouseWidth * lighthouseHeight * 3);
-    for (let i = 0; i < lighthouseWidth * lighthouseHeight; ) {
+    for (let i = 0; i < lighthouseWidth * lighthouseHeight * 3; ) {
       const r = Math.round(Math.random() * 255);
       const g = Math.round(Math.random() * 255);
       const b = Math.round(Math.random() * 255);
