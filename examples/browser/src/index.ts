@@ -1,1 +1,1 @@
-console.log("Hello World!");
+import * as litehouse from "litehouse/browser";
