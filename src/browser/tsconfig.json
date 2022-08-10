@@ -4,6 +4,7 @@
     { "path": "../common/tsconfig.json" },
   ],
   "compilerOptions": {
+    "tsBuildInfoFile": "../../out/browser/compile.tsbuildinfo",
     "rootDir": ".",
     "outDir": "../../out/browser"
   }
