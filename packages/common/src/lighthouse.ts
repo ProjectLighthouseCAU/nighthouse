@@ -21,6 +21,11 @@ export class Lighthouse {
     });
   }
 
+  /** A promise that resolves once ready. */
+  async ready(): Promise<void> {
+    this.transport.ready();
+  }
+
   // TODO: Input handling
 
   /** Sends a display. */
