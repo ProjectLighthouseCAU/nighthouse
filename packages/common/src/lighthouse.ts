@@ -1,11 +1,14 @@
 import { Transport } from "./transport";
-import { ServerMessage } from "./types";
+import { Auth, ClientMessage, ServerMessage, Verb } from "./types";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
 /** A connection to the lighthouse. */
 export class Lighthouse {
+  private requestId: number = 0;
+
   constructor(
+    private readonly auth: Auth,
     private readonly transport: Transport,
     private readonly logger: Logger = new Logger(new NoopLogHandler()),
     private readonly coder: Coder = new MessagePackCoder(),
@@ -15,6 +18,33 @@ export class Lighthouse {
       // TODO: Check that the message actually conforms to ServerMessage
       await this.handle(message as ServerMessage<unknown>);
     });
+  }
+
+  // TODO: Input handling
+
+  /** Sends a display. */
+  async sendDisplay(rgbValues: Uint8Array): Promise<void> {
+    this.sendRequest('PUT', ['user', this.auth.USER, 'model'], rgbValues);
+  }
+
+  /** Requests a stream. */
+  async requestStream(): Promise<void> {
+    this.sendRequest('STREAM', ['user', this.auth.USER, 'model'], {});
+  }
+
+  /** Sends a request. */
+  async sendRequest<T>(verb: Verb, path: string[], payload: T): Promise<void> {
+    // TODO: Handle response
+    const message: ClientMessage<T> = {
+      AUTH: this.auth,
+      REID: this.requestId++,
+      VERB: verb,
+      PATH: path,
+      META: {},
+      PAYL: payload,
+    };
+    const raw = this.coder.encode(message);
+    await this.transport.send(raw);
   }
 
   /** Sends an arbitrary message. */
