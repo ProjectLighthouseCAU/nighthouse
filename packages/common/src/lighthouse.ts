@@ -1,14 +1,14 @@
 import { Transport } from "./transport";
 import { ServerMessage } from "./types";
-import { Logger } from "./log";
-import { Coder } from "./coder";
+import { Logger, NoopLogHandler } from "./log";
+import { Coder, MessagePackCoder } from "./coder";
 
 /** A connection to the lighthouse. */
 export class Lighthouse {
   constructor(
     private readonly transport: Transport,
-    private readonly coder: Coder,
-    private readonly logger: Logger,
+    private readonly logger: Logger = new Logger(new NoopLogHandler()),
+    private readonly coder: Coder = new MessagePackCoder(),
   ) {
     transport.onReceive(async raw => {
       const message = coder.decode(raw);

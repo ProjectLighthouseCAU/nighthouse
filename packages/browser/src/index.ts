@@ -8,5 +8,5 @@ export function connect(opts: Options): Lighthouse {
   const ws = new WebSocket(opts.url);
   const transport = new BrowserWebSocketTransport(ws);
   const logger = new Logger(opts.logHandler ?? new NoopLogHandler());
-  return new Lighthouse(transport, null!!, logger); // FIXME
+  return new Lighthouse(transport, logger);
 }
