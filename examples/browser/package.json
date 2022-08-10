@@ -1,12 +1,18 @@
 {
   "name": "litehouse-browser-example",
+  "private": true,
   "version": "0.0.1",
   "description": "",
   "author": "fwcd",
   "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode development",
+    "watch": "webpack --mode development --watch"
+  },
   "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "litehouse": "file:../..",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "litehouse": "file:../.."
+    "webpack-cli": "^4.10.0"
   }
 }
