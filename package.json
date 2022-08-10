@@ -6,8 +6,8 @@
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "fwcd",
+  "license": "MIT",
   "dependencies": {
     "@msgpack/msgpack": "^2.7.2"
   },
