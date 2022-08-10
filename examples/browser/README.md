@@ -23,3 +23,11 @@ npm run watch
 ```
 
 In either case the outputs will be placed in the `dist` folder, where they can be served using any web server or simply opened locally using a web browser of your choice.
+
+Alternatively, you can also use
+
+```sh
+npm run serve
+```
+
+to run a development web server directly and automatically rebuild in the background.
