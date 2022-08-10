@@ -1,10 +1,8 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "rootDir": "./src",
-    "outDir": "./out"
-  },
-  "exclude": [
-    "node_modules"
+  "extends": "./tsconfig.base.json",
+  "references": [
+    { "path": "./src/browser/tsconfig.json" },
+    { "path": "./src/common/tsconfig.json" },
+    { "path": "./src/node/tsconfig.json" }
   ]
 }
