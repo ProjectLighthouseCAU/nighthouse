@@ -1,5 +1,5 @@
 import * as litehouse from "litehouse-browser";
-import { Auth, ConsoleLogHandler, lighthouseHeight, lighthouseWidth } from "litehouse-common";
+import { Auth, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH } from "litehouse-common";
 
 addEventListener('load', () => {
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
@@ -19,8 +19,8 @@ addEventListener('load', () => {
     console.log('Connected!');
 
     // Send some colors
-    const values = new Uint8Array(lighthouseWidth * lighthouseHeight * 3);
-    for (let i = 0; i < lighthouseWidth * lighthouseHeight * 3; ) {
+    const values = new Uint8Array(LIGHTHOUSE_WIDTH * LIGHTHOUSE_HEIGHT * 3);
+    for (let i = 0; i < LIGHTHOUSE_WIDTH * LIGHTHOUSE_HEIGHT * 3; ) {
       const r = Math.round(Math.random() * 255);
       const g = Math.round(Math.random() * 255);
       const b = Math.round(Math.random() * 255);
