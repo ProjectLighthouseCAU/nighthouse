@@ -40,7 +40,6 @@ export class Lighthouse {
 
   /** Sends a request. */
   async sendRequest<T>(verb: Verb, path: string[], payload: T): Promise<ServerMessage<unknown>> {
-    // TODO: Handle response
     const message: ClientMessage<T> = {
       AUTH: this.auth,
       REID: this.requestId++,
