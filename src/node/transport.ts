@@ -18,4 +18,8 @@ export class NodeTransport implements Transport {
       }
     });
   }
+
+  async close(): Promise<void> {
+    this.ws.close();
+  }
 }

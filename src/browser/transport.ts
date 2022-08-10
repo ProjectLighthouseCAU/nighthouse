@@ -13,4 +13,8 @@ export class BrowserTransport implements Transport {
       handler(new Uint8Array(e.data));
     });
   }
+
+  async close(): Promise<void> {
+    this.ws.close();
+  }
 }
