@@ -23,9 +23,17 @@ function getEnv(name: string): string {
     logHandler: new ConsoleLogHandler(),
   });
 
-  logger.info('Connecting...');
+  // Wait until ready
   await lh.ready();
   logger.info('Connected!');
+
+  // Register input handlers
+  lh.addKeyHandler(event => {
+    logger.info(`Got key event ${JSON.stringify(event)}`);
+  });
+
+  // Request stream for user's model
+  await lh.requestStream();
 
   // Send some colors
   const values = new Uint8Array(LIGHTHOUSE_WINDOWS * 3);
