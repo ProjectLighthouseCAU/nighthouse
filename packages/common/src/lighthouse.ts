@@ -77,7 +77,7 @@ export class Lighthouse {
   /** Handles an arbitrary (received) message. */
   private async handle(message: ServerMessage<unknown>): Promise<void> {
     const id = message.REID;
-    if (id) {
+    if (id !== undefined) {
       const handler = this.responseHandlers.get(id);
       if (handler) {
         handler(message);
