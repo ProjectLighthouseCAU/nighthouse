@@ -62,8 +62,8 @@ export class Connection {
   }
 
   /** Requests a stream. Required to receive key/controller events. */
-  async requestStream(): Promise<ServerMessage<unknown>> {
-    return this.sendRequest('STREAM', ['user', this.auth.USER, 'model'], {});
+  async requestStream(user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
+    return this.sendRequest('STREAM', ['user', user, 'model'], {});
   }
 
   /** Sends a request. */
