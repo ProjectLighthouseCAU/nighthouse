@@ -15,9 +15,11 @@ export class Lighthouse {
     private readonly coder: Coder = new MessagePackCoder(),
   ) {
     transport.onReceive(async raw => {
-      const message = coder.decode(raw);
-      // TODO: Check that the message actually conforms to ServerMessage
-      await this.handle(message as ServerMessage<unknown>);
+      if (raw.length > 0) {
+        const message = coder.decode(raw);
+        // TODO: Check that the message actually conforms to ServerMessage
+        await this.handle(message as ServerMessage<unknown>);
+      }
     });
   }
 
