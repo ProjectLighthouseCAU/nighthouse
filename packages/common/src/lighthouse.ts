@@ -48,9 +48,8 @@ export class Lighthouse {
       META: {},
       PAYL: payload,
     };
-    const raw = this.coder.encode(message);
     const responsePromise = this.receiveResponse(message.REID);
-    await this.send(raw);
+    await this.send(message);
     return await responsePromise;
   }
 
