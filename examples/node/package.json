@@ -1,0 +1,21 @@
+{
+  "name": "nighthouse-example-node",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Example showcasing Nighthouse in a simple Node app",
+  "author": "fwcd",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "watch": "tsc -b tsconfig.json --watch",
+    "start": "node lib/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "nighthouse-node": "^0.0.1"
+  }
+}

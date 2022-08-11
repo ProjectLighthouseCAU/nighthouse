@@ -1,8 +1,8 @@
 {
   "name": "nighthouse-example-browser",
   "private": true,
-  "version": "1.0.0",
-  "description": "My webpack project",
+  "version": "0.0.1",
+  "description": "Example showcasing Nighthouse in a simple web app",
   "author": "fwcd",
   "license": "MIT",
   "scripts": {

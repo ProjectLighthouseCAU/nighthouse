@@ -1,5 +1,5 @@
 import * as nighthouse from "nighthouse-browser";
-import { Auth, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH } from "nighthouse-common";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS } from "nighthouse-common";
 
 addEventListener('load', () => {
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
@@ -8,6 +8,7 @@ addEventListener('load', () => {
   const connectButton = document.getElementById('lighthouse-connect');
 
   connectButton.addEventListener('click', async () => {
+    // Connect to lighthouse
     const lh = await nighthouse.connect({
       url: urlField.value,
       auth: { USER: usernameField.value, TOKEN: tokenField.value },
@@ -19,8 +20,8 @@ addEventListener('load', () => {
     console.log('Connected!');
 
     // Send some colors
-    const values = new Uint8Array(LIGHTHOUSE_WIDTH * LIGHTHOUSE_HEIGHT * 3);
-    for (let i = 0; i < LIGHTHOUSE_WIDTH * LIGHTHOUSE_HEIGHT * 3; ) {
+    const values = new Uint8Array(LIGHTHOUSE_WINDOWS * 3);
+    for (let i = 0; i < LIGHTHOUSE_WINDOWS * 3; ) {
       const r = Math.round(Math.random() * 255);
       const g = Math.round(Math.random() * 255);
       const b = Math.round(Math.random() * 255);
