@@ -1,12 +1,17 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, isServerMessage, ServerMessage, Verb } from "./types";
+import { Auth, ClientMessage, ControllerEvent, isControllerEvent, isKeyEvent, isServerMessage, KeyEvent, ServerMessage, Verb } from "./types";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
 /** A connection to the lighthouse. */
 export class Lighthouse {
+  /** The current request id. Automatically increments for every request. */
   private requestId: number = 0;
+
+  /** Handlers for response messages. */
   private responseHandlers: Map<number, (message: ServerMessage<unknown>) => void> = new Map();
+  /** Handlers for other server messages. */
+  private eventHandlers: ((message: ServerMessage<unknown>) => void)[] = [];
 
   constructor(
     private readonly auth: Auth,
@@ -31,14 +36,32 @@ export class Lighthouse {
     await this.transport.ready();
   }
 
-  // TODO: Input handling
+  /** Adds a key event handler. Receiving these events requires calling `requestStream`. */
+  addKeyHandler(handler: (event: KeyEvent) => void): void {
+    this.eventHandlers.push(message => {
+      const payload = message.PAYL;
+      if (isKeyEvent(payload)) {
+        handler(payload);
+      }
+    });
+  }
+
+  /** Adds a controller event handler. Receiving these events requires calling `requestStream`. */
+  addControllerHandler(handler: (event: ControllerEvent) => void): void {
+    this.eventHandlers.push(message => {
+      const payload = message.PAYL;
+      if (isControllerEvent(payload)) {
+        handler(payload);
+      }
+    });
+  }
 
   /** Sends a display. */
   async sendDisplay(rgbValues: Uint8Array): Promise<ServerMessage<unknown>> {
     return this.sendRequest('PUT', ['user', this.auth.USER, 'model'], rgbValues);
   }
 
-  /** Requests a stream. */
+  /** Requests a stream. Required to receive key/controller events. */
   async requestStream(): Promise<ServerMessage<unknown>> {
     return this.sendRequest('STREAM', ['user', this.auth.USER, 'model'], {});
   }
@@ -79,15 +102,17 @@ export class Lighthouse {
 
   /** Handles a server message. */
   private async handle(message: ServerMessage<unknown>): Promise<void> {
-    const id = message.REID;
-    if (id !== undefined) {
-      const handler = this.responseHandlers.get(id);
-      if (handler) {
-        handler(message);
-        this.responseHandlers.delete(id);
-      }
+    const responseHandler = this.responseHandlers.get(message.REID);
+    if (responseHandler) {
+      // A response handler exists, invoke it.
+      responseHandler(message);
+      this.responseHandlers.delete(message.REID);
     } else {
-      this.logger.warning(`Unhandled message: ${JSON.stringify(message)}`);
+      // No response handler exists, treat it as an independent event.
+      this.logger.warning(`Message has no response handler, will ignore: ${JSON.stringify(message)}`);
+      for (const eventHandler of this.eventHandlers) {
+        eventHandler(message);
+      }
     }
   }
 
