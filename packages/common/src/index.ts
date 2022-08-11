@@ -1,6 +1,6 @@
 export * from './coder';
 export * from './constants';
-export * from './lighthouse';
+export * from './connection';
 export * from './log';
 export * from './options';
 export * from './transport';
