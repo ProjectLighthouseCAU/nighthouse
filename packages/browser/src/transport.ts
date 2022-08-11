@@ -6,10 +6,11 @@ export class BrowserWebSocketTransport implements Transport {
     private readonly ws: WebSocket,
     private readonly logger: Logger = new Logger(new NoopLogHandler()),
   ) {
-    this.ws.addEventListener('error', e => {
+    ws.binaryType = 'arraybuffer';
+    ws.addEventListener('error', e => {
       logger.error(`WebSocket error: ${e}`);
     });
-    this.ws.addEventListener('close', () => {
+    ws.addEventListener('close', () => {
       logger.info(`WebSocket closed`);
     });
   }
