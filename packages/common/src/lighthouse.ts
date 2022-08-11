@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, ServerMessage, Verb } from "./types";
+import { Auth, ClientMessage, isServerMessage, ServerMessage, Verb } from "./types";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
@@ -17,8 +17,11 @@ export class Lighthouse {
     transport.onReceive(async raw => {
       if (raw.length > 0) {
         const message = coder.decode(raw);
-        // TODO: Check that the message actually conforms to ServerMessage
-        await this.handle(message as ServerMessage<unknown>);
+        if (isServerMessage(message)) {
+          await this.handle(message);
+        } else {
+          logger.warning(`Got unknown message: ${JSON.stringify(message)}`);
+        }
       }
     });
   }
@@ -55,8 +58,8 @@ export class Lighthouse {
     return await responsePromise;
   }
 
-  /** Sends an arbitrary message. */
-  async send<T>(message: T): Promise<void> {
+  /** Sends a client message. */
+  async send<P>(message: ClientMessage<P>): Promise<void> {
     const raw = this.coder.encode(message);
     await this.transport.send(raw);
   }
@@ -64,7 +67,7 @@ export class Lighthouse {
   /** Asynchronously receives a response for the given request id. */
   private async receiveResponse(id: number): Promise<ServerMessage<unknown>> {
     return new Promise((resolve, reject) => {
-      this.responseHandlers[id] = message => {
+      this.responseHandlers[id] = (message: ServerMessage<unknown>) => {
         if (message.RNUM === 200) {
           resolve(message);
         } else {
@@ -74,7 +77,7 @@ export class Lighthouse {
     });
   }
 
-  /** Handles an arbitrary (received) message. */
+  /** Handles a server message. */
   private async handle(message: ServerMessage<unknown>): Promise<void> {
     const id = message.REID;
     if (id !== undefined) {
