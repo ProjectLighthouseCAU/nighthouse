@@ -1,5 +1,5 @@
 {
-  "name": "litehouse-common",
+  "name": "nighthouse-common",
   "version": "0.0.1",
   "description": "Shared Project Lighthouse client structures",
   "main": "lib/index.js",

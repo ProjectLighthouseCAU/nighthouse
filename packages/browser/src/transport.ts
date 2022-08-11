@@ -1,4 +1,4 @@
-import { Logger, NoopLogHandler, Transport } from "litehouse-common";
+import { Logger, NoopLogHandler, Transport } from "nighthouse-common";
 
 /** A transport that uses browser WebSockets. */
 export class BrowserWebSocketTransport implements Transport {

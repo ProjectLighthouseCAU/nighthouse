@@ -1,5 +1,5 @@
 {
-  "name": "litehouse-example-browser",
+  "name": "nighthouse-example-browser",
   "private": true,
   "version": "1.0.0",
   "description": "My webpack project",
@@ -24,6 +24,6 @@
     "webpack-dev-server": "^4.8.1"
   },
   "dependencies": {
-    "litehouse-browser": "^0.0.1"
+    "nighthouse-browser": "^0.0.1"
   }
 }

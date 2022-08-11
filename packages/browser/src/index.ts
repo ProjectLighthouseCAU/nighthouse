@@ -1,7 +1,7 @@
-import { Lighthouse, Logger, NoopLogHandler, Options } from "litehouse-common";
+import { Lighthouse, Logger, NoopLogHandler, Options } from "nighthouse-common";
 import { BrowserWebSocketTransport } from "./transport";
 
-export * from "litehouse-common";
+export * from "nighthouse-common";
 
 /** Connects to the lighthouse at the given (ws/wss) URL. */
 export function connect(opts: Options): Lighthouse {

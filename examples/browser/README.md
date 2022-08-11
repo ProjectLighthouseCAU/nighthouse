@@ -1,6 +1,6 @@
-# Litehouse Browser Example
+# Nighthouse Browser Example
 
-A small example showcasing how Litehouse can be used in a simple web app.
+A small example showcasing how Nighthouse can be used in a simple web app.
 
 ## Getting Started
 

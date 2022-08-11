@@ -1,5 +1,5 @@
-import * as litehouse from "litehouse-browser";
-import { Auth, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH } from "litehouse-common";
+import * as nighthouse from "nighthouse-browser";
+import { Auth, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH } from "nighthouse-common";
 
 addEventListener('load', () => {
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
@@ -8,7 +8,7 @@ addEventListener('load', () => {
   const connectButton = document.getElementById('lighthouse-connect');
 
   connectButton.addEventListener('click', async () => {
-    const lh = await litehouse.connect({
+    const lh = await nighthouse.connect({
       url: urlField.value,
       auth: { USER: usernameField.value, TOKEN: tokenField.value },
       logHandler: new ConsoleLogHandler(),

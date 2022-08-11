@@ -1,4 +1,4 @@
-import { Logger, NoopLogHandler, Transport } from "litehouse-common";
+import { Logger, NoopLogHandler, Transport } from "nighthouse-common";
 import { WebSocket } from "ws";
 
 /** A transport that uses the 'ws' library for Node. */

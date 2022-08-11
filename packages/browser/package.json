@@ -1,5 +1,5 @@
 {
-  "name": "litehouse-browser",
+  "name": "nighthouse-browser",
   "version": "0.0.1",
   "description": "Lightweight Project Lighthouse client for the browser",
   "main": "lib/index.js",
@@ -12,7 +12,7 @@
   "author": "fwcd",
   "license": "MIT",
   "dependencies": {
-    "litehouse-common": "^0.0.1"
+    "nighthouse-common": "^0.0.1"
   },
   "devDependencies": {
     "typescript": "^4.7.4"
