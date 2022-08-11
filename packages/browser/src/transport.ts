@@ -22,7 +22,6 @@ export class BrowserWebSocketTransport implements Transport {
     if (this.ws.readyState === WebSocket.CONNECTING || this.ws.readyState === WebSocket.CLOSED) {
       await new Promise<void>(resolve => {
         this.ws.addEventListener('open', () => {
-          this.logger.info("Open");
           resolve();
         });
       });

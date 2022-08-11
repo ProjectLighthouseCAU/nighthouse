@@ -1,5 +1,7 @@
 import * as nighthouse from "nighthouse-browser";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS } from "nighthouse-common";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-browser";
+
+const logger = new Logger(new ConsoleLogHandler());
 
 addEventListener('load', () => {
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
@@ -12,12 +14,12 @@ addEventListener('load', () => {
     const lh = await nighthouse.connect({
       url: urlField.value,
       auth: { USER: usernameField.value, TOKEN: tokenField.value },
-      logHandler: new ConsoleLogHandler(),
+      logHandler: logger,
     });
 
-    console.log('Connecting...');
+    logger.info('Connecting...');
     await lh.ready();
-    console.log('Connected!');
+    logger.info('Connected!');
 
     // Send some colors
     const values = new Uint8Array(LIGHTHOUSE_WINDOWS * 3);

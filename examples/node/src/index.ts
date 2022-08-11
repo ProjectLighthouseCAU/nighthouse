@@ -1,6 +1,8 @@
 import * as nighthouse from "nighthouse-node";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS } from "nighthouse-node";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-node";
 import * as process from "process";
+
+const logger = new Logger(new ConsoleLogHandler());
 
 function getEnv(name: string): string {
   const value = process.env[name];
@@ -21,9 +23,9 @@ function getEnv(name: string): string {
     logHandler: new ConsoleLogHandler(),
   });
 
-  console.log('Connecting...');
+  logger.info('Connecting...');
   await lh.ready();
-  console.log('Connected!');
+  logger.info('Connected!');
 
   // Send some colors
   const values = new Uint8Array(LIGHTHOUSE_WINDOWS * 3);
