@@ -109,7 +109,6 @@ export class Connection {
       this.responseHandlers.delete(message.REID);
     } else {
       // No response handler exists, treat it as an independent event.
-      this.logger.warning(`Message has no response handler, will ignore: ${JSON.stringify(message)}`);
       for (const eventHandler of this.eventHandlers) {
         eventHandler(message);
       }
