@@ -20,7 +20,7 @@ function getEnv(name: string): string {
   const lh = nighthouse.connect({
     url,
     auth: { USER: username, TOKEN: token },
-    logHandler: new ConsoleLogHandler(),
+    logHandler: logger,
   });
 
   // Wait until ready
