@@ -56,6 +56,16 @@ export class Connection {
     });
   }
 
+  /** Adds a display event handler. Receiving these events requires calling `requestStream`. */
+  addDisplayHandler(handler: (event: Uint8Array) => void): void {
+    this.eventHandlers.push(message => {
+      const payload = message.PAYL;
+      if (payload instanceof Uint8Array) {
+        handler(payload);
+      }
+    });
+  }
+
   /** Sends a display. */
   async sendDisplay(rgbValues: Uint8Array): Promise<ServerMessage<unknown>> {
     return this.sendRequest('PUT', ['user', this.auth.USER, 'model'], rgbValues);

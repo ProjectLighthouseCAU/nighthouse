@@ -21,10 +21,13 @@ addEventListener('load', () => {
     await lh.ready();
     logger.info('Connected!');
 
-    // Register input handlers
+    // Register event handlers
     lh.addKeyHandler(event => {
       logger.info(`Got key event ${JSON.stringify(event)}`);
     });
+    lh.addDisplayHandler(event => {
+      logger.info(`Got display ${event}`);
+    })
 
     // Request stream for user's model
     await lh.requestStream();
