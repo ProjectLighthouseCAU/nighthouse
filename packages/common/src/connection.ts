@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, ControllerEvent, isControllerEvent, isKeyEvent, isServerMessage, KeyEvent, ServerMessage, Verb } from "./types";
+import { Auth, ClientMessage, ControllerEvent, InputEvent, isControllerEvent, isKeyEvent, isServerMessage, KeyEvent, ServerMessage, Verb } from "./types";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
@@ -69,6 +69,11 @@ export class Connection {
   /** Sends a display. */
   async sendDisplay(rgbValues: Uint8Array): Promise<ServerMessage<unknown>> {
     return this.sendRequest('PUT', ['user', this.auth.USER, 'model'], rgbValues);
+  }
+
+  /** Sends an input event. */
+  async sendInput(input: InputEvent): Promise<ServerMessage<unknown>> {
+    return this.sendRequest('PUT', ['user', this.auth.USER, 'model'], input);
   }
 
   /** Requests a stream. Required to receive key/controller events. */
