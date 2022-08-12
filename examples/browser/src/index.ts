@@ -1,15 +1,36 @@
 import * as nighthouse from "nighthouse-browser";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-browser";
+import { ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-browser";
 
 import '../styles.css';
 
 const logger = new Logger(new ConsoleLogHandler());
 
+function renderLighthouseView(display: Uint8Array, canvas: HTMLCanvasElement): void {
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'red';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const windowWidth = Math.round(canvas.width / LIGHTHOUSE_WIDTH);
+  const windowHeight = Math.round(canvas.height / LIGHTHOUSE_HEIGHT);
+
+  for (let y = 0; y < LIGHTHOUSE_HEIGHT; y++) {
+    for (let x = 0; x < LIGHTHOUSE_WIDTH; x++) {
+      const i = 3 * (y * LIGHTHOUSE_WIDTH + x);
+      const r = display[i];
+      const g = display[i + 1];
+      const b = display[i + 2];
+      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      ctx.fillRect(x * windowWidth, y * windowHeight, windowWidth, windowHeight);
+    }
+  }
+}
+
 addEventListener('load', () => {
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
   const usernameField = document.getElementById('lighthouse-username') as HTMLInputElement;
   const tokenField = document.getElementById('lighthouse-token') as HTMLInputElement;
-  const connectButton = document.getElementById('lighthouse-connect');
+  const connectButton = document.getElementById('lighthouse-connect') as HTMLButtonElement;
+  const viewCanvas = document.getElementById('lighthouse-view') as HTMLCanvasElement;
 
   connectButton.addEventListener('click', async () => {
     // Connect to lighthouse
@@ -28,7 +49,7 @@ addEventListener('load', () => {
       logger.info(`Got key event ${JSON.stringify(event)}`);
     });
     lh.addDisplayHandler(event => {
-      logger.info(`Got display ${event}`);
+      renderLighthouseView(event, viewCanvas);
     })
 
     // Request stream for user's model
