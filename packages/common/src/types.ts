@@ -27,20 +27,22 @@ export interface ServerMessage<P> {
 }
 
 /** An input event payload from the server. */
-export interface InputEvent {
+interface BaseInputEvent {
   src: number;
-  dwn: number;
+  dwn: boolean;
 }
 
 /** A key event payload from the server. */
-export interface KeyEvent extends InputEvent {
+export interface KeyEvent extends BaseInputEvent {
   key: number;
 }
 
 /** A controller event payload from the server. */
-export interface ControllerEvent extends InputEvent {
+export interface ControllerEvent extends BaseInputEvent {
   btn: number;
 }
+
+export type InputEvent = KeyEvent | ControllerEvent;
 
 /** A user-defined type guard for ServerMessage. */
 export function isServerMessage(value: any): value is ServerMessage<unknown> {

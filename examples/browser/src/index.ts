@@ -50,7 +50,24 @@ addEventListener('load', () => {
     });
     lh.addDisplayHandler(event => {
       renderLighthouseView(event, viewCanvas);
-    })
+    });
+
+    // Add key listeners
+    viewCanvas.tabIndex = 0;
+    viewCanvas.addEventListener('keydown', event => {
+      lh.sendInput({
+        dwn: true,
+        src: 0, // TODO: Provide a meaningful value
+        key: event.keyCode,
+      });
+    });
+    viewCanvas.addEventListener('keyup', event => {
+      lh.sendInput({
+        dwn: false,
+        src: 0, // TODO: Provide a meaningful value
+        key: event.keyCode,
+      });
+    });
 
     // Request stream for user's model
     await lh.requestStream();
