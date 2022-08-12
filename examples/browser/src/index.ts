@@ -1,6 +1,8 @@
 import * as nighthouse from "nighthouse-browser";
 import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-browser";
 
+import '../styles.css';
+
 const logger = new Logger(new ConsoleLogHandler());
 
 addEventListener('load', () => {
