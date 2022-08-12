@@ -17,7 +17,7 @@ function getEnv(name: string): string {
   let token = getEnv('LIGHTHOUSE_TOKEN');
 
   // Connect to lighthouse
-  const lh = await nighthouse.connect({
+  const lh = nighthouse.connect({
     url,
     auth: { USER: username, TOKEN: token },
     logHandler: new ConsoleLogHandler(),
