@@ -1,8 +1,13 @@
 body {
   display: flex;
-  background-color: black;
+  flex-wrap: wrap;
+  background-color: rgb(20, 20, 20);
   color: white;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+}
+
+body > * {
+  margin: 10px;
 }
 
 header {
