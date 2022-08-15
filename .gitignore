@@ -4,3 +4,4 @@ out
 lib
 *.tsbuildinfo
 .env
+docs

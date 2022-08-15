@@ -4,6 +4,10 @@
   "description": "Lightweight Project Lighthouse client for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typedoc": {
+    "entryPoint": "src/index.ts",
+    "displayName": "Nighthouse Node"
+  },
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",

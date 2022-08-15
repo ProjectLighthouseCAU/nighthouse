@@ -4,6 +4,10 @@
   "description": "Shared Project Lighthouse client structures",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typedoc": {
+    "entryPoint": "src/index.ts",
+    "displayName": "Nighthouse Common"
+  },
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",
