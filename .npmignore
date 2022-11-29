@@ -1,1 +1,8 @@
+.github
+.editorconfig
+.vscode
+
+examples
+
+typedoc.json
 docs
