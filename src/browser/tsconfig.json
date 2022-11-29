@@ -4,9 +4,9 @@
     { "path": "../common/tsconfig.json" },
   ],
   "compilerOptions": {
-    "tsBuildInfoFile": "./lib/compile.tsbuildinfo",
-    "rootDir": "./src",
-    "outDir": "./lib",
+    "tsBuildInfoFile": "../../out/browser/compile.tsbuildinfo",
+    "rootDir": ".",
+    "outDir": "../../out/browser",
     "lib": ["ES2015", "DOM"]
   }
 }

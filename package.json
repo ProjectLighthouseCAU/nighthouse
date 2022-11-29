@@ -4,7 +4,6 @@
   "description": "Lightweight Project Lighthouse client for JavaScript",
   "private": true,
   "workspaces": [
-    "packages/*",
     "examples/*"
   ],
   "scripts": {
@@ -20,5 +19,13 @@
   },
   "devDependencies": {
     "typedoc": "^0.23.10"
+  },
+  "peerDependencies": {
+    "ws": "^8.11.0"
+  },
+  "peerDependenciesMeta": {
+    "ws": {
+      "optional": true
+    }
   }
 }

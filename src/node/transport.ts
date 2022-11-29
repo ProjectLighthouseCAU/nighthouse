@@ -1,5 +1,5 @@
-import { Logger, NoopLogHandler, Transport } from "nighthouse-common";
-import { WebSocket } from "ws";
+import { Logger, NoopLogHandler, Transport } from '../common';
+import { WebSocket } from 'ws';
 
 /** A transport that uses the 'ws' library for Node. */
 export class NodeWebSocketTransport implements Transport {

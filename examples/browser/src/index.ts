@@ -1,5 +1,5 @@
-import * as nighthouse from "nighthouse-browser";
-import { Auth, Connection, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-browser";
+import * as nighthouse from "nighthouse/browser";
+import { Auth, Connection, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
 
 import '../styles.css';
 

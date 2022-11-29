@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../out/common/compile.tsbuildinfo",
+    "rootDir": ".",
+    "outDir": "../../out/common",
+    "lib": ["DOM", "ES2015"]
+  }
+}

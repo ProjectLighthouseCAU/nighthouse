@@ -1,5 +1,5 @@
-import * as nighthouse from "nighthouse-node";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse-node";
+import * as nighthouse from "nighthouse/node";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/node";
 import * as process from "process";
 
 const logger = new Logger(new ConsoleLogHandler());

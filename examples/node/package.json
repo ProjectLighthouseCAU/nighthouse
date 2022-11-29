@@ -16,6 +16,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "nighthouse-node": "^0.0.1"
+    "nighthouse": "file:../..",
+    "ws": "^8.11.0"
   }
 }

@@ -1,8 +1,8 @@
-import { Connection, Logger, NoopLogHandler, Options } from "nighthouse-common";
-import { WebSocket } from "ws";
+import { Connection, Logger, NoopLogHandler, Options } from '../common';
+import { WebSocket } from 'ws';
 import { NodeWebSocketTransport } from "./transport";
 
-export * from "nighthouse-common";
+export * from '../common';
 
 /** Connects to the lighthouse at the given (ws/wss) URL. */
 export function connect(opts: Options): Connection {
