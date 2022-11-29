@@ -1,11 +1,11 @@
 import * as nighthouse from "nighthouse/browser";
-import { Auth, Connection, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
+import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
 
 import '../styles.css';
 
 const logger = new Logger(new ConsoleLogHandler());
 
-let lh: Connection | undefined;
+let lh: Lighthouse | undefined;
 let display = new Uint8Array(3 * LIGHTHOUSE_WINDOWS);
 
 function renderLighthouseView(view: HTMLCanvasElement): void {
@@ -56,25 +56,29 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
   logger.info('Connected!');
 
   // Register event handlers
-  lh.addKeyHandler(event => {
-    logger.info(`Got key event ${JSON.stringify(event)}`);
-  });
-  lh.addDisplayHandler(event => {
-    display = event;
-    renderLighthouseView(view);
+  const stream = await lh.streamModel();
+  (async () => {
+    for await (const event of stream) {
+      if (event instanceof Uint8Array) {
+        display = event;
+        renderLighthouseView(view);
+      } else {
+        logger.info(`Got event ${JSON.stringify(event)}`);
+      }
+    }
   });
 
   // Add key listeners
   view.tabIndex = 0;
   view.addEventListener('keydown', event => {
-    lh.sendInput({
+    lh.putModel({
       dwn: true,
       src: 0, // TODO: Provide a meaningful value
       key: event.keyCode,
     });
   });
   view.addEventListener('keyup', event => {
-    lh.sendInput({
+    lh.putModel({
       dwn: false,
       src: 0, // TODO: Provide a meaningful value
       key: event.keyCode,
@@ -83,9 +87,6 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
   view.addEventListener('resize', () => {
     renderLighthouseView(view);
   });
-
-  // Request stream for user's model
-  await lh.requestStream();
 }
 
 window.addEventListener('load', () => {
