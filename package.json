@@ -10,7 +10,7 @@
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",
     "prepare": "npm run build",
-    "generate-docs": "typedoc --entryPointStrategy packages packages/browser packages/common packages/node --tsconfig ./tsconfig.json"
+    "generate-docs": "typedoc"
   },
   "author": "fwcd",
   "license": "MIT",
