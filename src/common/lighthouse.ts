@@ -4,7 +4,7 @@ import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
 /** A connection to the lighthouse. */
-export class Connection {
+export class Lighthouse {
   /** The current request id. Automatically increments for every request. */
   private requestId: number = 0;
 
