@@ -113,8 +113,12 @@ export class Lighthouse {
       this.responseHandlers.delete(message.REID);
     } else {
       // No response handler exists, treat it as an independent event.
-      for (const eventHandler of this.eventHandlers) {
-        eventHandler(message);
+      if (this.eventHandlers.length > 0) {
+        for (const eventHandler of this.eventHandlers) {
+          eventHandler(message);
+        }
+      } else {
+        this.logger.warning(`Got unhandled event: ${JSON.stringify(message)}`);
       }
     }
   }
