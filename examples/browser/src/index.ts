@@ -66,7 +66,7 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
         logger.info(`Got event ${JSON.stringify(event)}`);
       }
     }
-  });
+  })();
 
   // Add key listeners
   view.tabIndex = 0;
