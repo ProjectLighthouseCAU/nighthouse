@@ -1,5 +1,5 @@
 import * as nighthouse from "nighthouse/browser";
-import { Auth, Connection, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
+import { Auth, Connection, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
 
 import '../styles.css';
 
@@ -13,12 +13,12 @@ function renderLighthouseView(view: HTMLCanvasElement): void {
   ctx.fillStyle = '#111111';
   ctx.fillRect(0, 0, view.width, view.height);
 
-  const windowWidth = Math.round(view.width / LIGHTHOUSE_WIDTH);
-  const windowHeight = Math.round(view.height / (2 * LIGHTHOUSE_HEIGHT));
+  const windowWidth = Math.round(view.width / LIGHTHOUSE_COLS);
+  const windowHeight = Math.round(view.height / (2 * LIGHTHOUSE_ROWS));
 
-  for (let y = 0; y < LIGHTHOUSE_HEIGHT; y++) {
-    for (let x = 0; x < LIGHTHOUSE_WIDTH; x++) {
-      const i = 3 * (y * LIGHTHOUSE_WIDTH + x);
+  for (let y = 0; y < LIGHTHOUSE_ROWS; y++) {
+    for (let x = 0; x < LIGHTHOUSE_COLS; x++) {
+      const i = 3 * (y * LIGHTHOUSE_COLS + x);
       const r = display[i];
       const g = display[i + 1];
       const b = display[i + 2];
@@ -30,7 +30,7 @@ function renderLighthouseView(view: HTMLCanvasElement): void {
 
 function resizeLighthouseView(view: HTMLCanvasElement): void {
   const innerSize = Math.min(window.innerHeight, window.innerWidth);
-  const newSize = Math.floor((0.9 * innerSize) / LIGHTHOUSE_HEIGHT) * LIGHTHOUSE_HEIGHT;
+  const newSize = Math.floor((0.9 * innerSize) / LIGHTHOUSE_ROWS) * LIGHTHOUSE_ROWS;
   if (Math.abs(view.height - newSize) > 10) {
     view.width = newSize;
     view.height = newSize;
