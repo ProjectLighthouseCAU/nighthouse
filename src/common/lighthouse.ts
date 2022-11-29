@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, ControllerEvent, InputEvent, isControllerEvent, isKeyEvent, isServerMessage, KeyEvent, ServerMessage, Verb } from "./types";
+import { Auth, ClientMessage, InputEvent, isServerMessage, ServerMessage, SingleVerb, StreamingVerb, Verb } from "./types";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
@@ -36,64 +36,41 @@ export class Lighthouse {
     await this.transport.ready();
   }
 
-  /** Adds a key event handler. Receiving these events requires calling `requestStream`. */
-  addKeyHandler(handler: (event: KeyEvent) => void): void {
-    this.eventHandlers.push(message => {
-      const payload = message.PAYL;
-      if (isKeyEvent(payload)) {
-        handler(payload);
-      }
-    });
+  /** Sends a frame or an input event to the user's model. */
+  async putModel(user: string = this.auth.USER, payload: Uint8Array | InputEvent): Promise<ServerMessage<unknown>> {
+    return this.perform('PUT', ['user', user, 'model'], payload);
   }
 
-  /** Adds a controller event handler. Receiving these events requires calling `requestStream`. */
-  addControllerHandler(handler: (event: ControllerEvent) => void): void {
-    this.eventHandlers.push(message => {
-      const payload = message.PAYL;
-      if (isControllerEvent(payload)) {
-        handler(payload);
-      }
-    });
+  /** Streams the user's model (including e.g. key/controller events). */
+  async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
+    return this.stream('STREAM', ['user', user, 'model'], {});
   }
 
-  /** Adds a display event handler. Receiving these events requires calling `requestStream`. */
-  addDisplayHandler(handler: (event: Uint8Array) => void): void {
-    this.eventHandlers.push(message => {
-      const payload = message.PAYL;
-      if (payload instanceof Uint8Array) {
-        handler(payload);
-      }
-    });
+  /** Performs a single request to the given path with the given payload. */
+  async perform<T>(verb: SingleVerb, path: string[], payload: T): Promise<ServerMessage<unknown>> {
+    const requestId = await this.sendRequest(verb, path, payload);
+    return await this.receiveSingle(requestId);
   }
 
-  /** Sends a display. */
-  async sendDisplay(rgbValues: Uint8Array): Promise<ServerMessage<unknown>> {
-    return this.sendRequest('PUT', ['user', this.auth.USER, 'model'], rgbValues);
-  }
-
-  /** Sends an input event. */
-  async sendInput(input: InputEvent): Promise<ServerMessage<unknown>> {
-    return this.sendRequest('PUT', ['user', this.auth.USER, 'model'], input);
-  }
-
-  /** Requests a stream. Required to receive key/controller events. */
-  async requestStream(user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
-    return this.sendRequest('STREAM', ['user', user, 'model'], {});
+  /** Performs a streaming request to the given path with the given payload. */
+  async stream<T>(verb: StreamingVerb, path: string[], payload: T): Promise<AsyncIterable<ServerMessage<unknown>>> {
+    const requestId = await this.sendRequest(verb, path, payload);
+    return this.receiveStreaming(requestId);
   }
 
   /** Sends a request. */
-  async sendRequest<T>(verb: Verb, path: string[], payload: T): Promise<ServerMessage<unknown>> {
+  private async sendRequest<T>(verb: Verb, path: string[], payload: T): Promise<number> {
+    const requestId = this.requestId++;
     const message: ClientMessage<T> = {
       AUTH: this.auth,
-      REID: this.requestId++,
+      REID: requestId,
       VERB: verb,
       PATH: path,
       META: {},
       PAYL: payload,
     };
-    const responsePromise = this.receiveResponse(message.REID);
     await this.send(message);
-    return await responsePromise;
+    return requestId;
   }
 
   /** Sends a client message. */
@@ -101,9 +78,9 @@ export class Lighthouse {
     const raw = this.coder.encode(message);
     await this.transport.send(raw);
   }
-  
-  /** Asynchronously receives a response for the given request id. */
-  private async receiveResponse(id: number): Promise<ServerMessage<unknown>> {
+
+  /** Receives a response for the given request id. */
+  private async receiveSingle(id: number): Promise<ServerMessage<unknown>> {
     return new Promise((resolve, reject) => {
       this.responseHandlers[id] = (message: ServerMessage<unknown>) => {
         if (message.RNUM === 200) {
@@ -111,8 +88,20 @@ export class Lighthouse {
         } else {
           reject(JSON.stringify(message));
         }
+        this.responseHandlers.delete(id);
       };
     });
+  }
+
+  /** Receives a stream of responses for the given request id. */
+  private async* receiveStreaming(id: number): AsyncIterable<ServerMessage<unknown>> {
+    try {
+      while (true) {
+        yield await this.receiveSingle(id);
+      }
+    } finally {
+      this.responseHandlers.delete(id);
+    }
   }
 
   /** Handles a server message. */
