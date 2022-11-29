@@ -13,7 +13,7 @@ function getEnv(name: string): string {
 (async () => {
   // Fetch credentials from env
   let url = getEnv('LIGHTHOUSE_URL');
-  let username = getEnv('LIGHTHOUSE_USERNAME');
+  let username = getEnv('LIGHTHOUSE_USER');
   let token = getEnv('LIGHTHOUSE_TOKEN');
 
   // Connect to lighthouse
