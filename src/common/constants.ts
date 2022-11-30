@@ -1,3 +1,5 @@
 export const LIGHTHOUSE_ROWS: number = 14;
 export const LIGHTHOUSE_COLS: number = 28;
 export const LIGHTHOUSE_WINDOWS: number = LIGHTHOUSE_ROWS * LIGHTHOUSE_COLS;
+export const LIGHTHOUSE_COLOR_CHANNELS: number = 3;
+export const LIGHTHOUSE_FRAME_BYTES: number = LIGHTHOUSE_WINDOWS * LIGHTHOUSE_COLOR_CHANNELS;

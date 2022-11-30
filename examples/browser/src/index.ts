@@ -1,12 +1,12 @@
 import * as nighthouse from "nighthouse/browser";
-import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
+import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_FRAME_BYTES, LIGHTHOUSE_COLOR_CHANNELS, Logger } from "nighthouse/browser";
 
 import '../styles.css';
 
 const logger = new Logger(new ConsoleLogHandler());
 
 let lh: Lighthouse | undefined;
-let display = new Uint8Array(3 * LIGHTHOUSE_WINDOWS);
+let frame = new Uint8Array(LIGHTHOUSE_FRAME_BYTES);
 
 function renderLighthouseView(view: HTMLCanvasElement): void {
   const ctx = view.getContext('2d');
@@ -18,11 +18,9 @@ function renderLighthouseView(view: HTMLCanvasElement): void {
 
   for (let y = 0; y < LIGHTHOUSE_ROWS; y++) {
     for (let x = 0; x < LIGHTHOUSE_COLS; x++) {
-      const i = 3 * (y * LIGHTHOUSE_COLS + x);
-      const r = display[i];
-      const g = display[i + 1];
-      const b = display[i + 2];
-      ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+      const i = LIGHTHOUSE_COLOR_CHANNELS * (y * LIGHTHOUSE_COLS + x);
+      const rgb = frame.slice(i, i + LIGHTHOUSE_COLOR_CHANNELS);
+      ctx.fillStyle = `rgb(${rgb.join(',')})`;
       ctx.fillRect(x * windowWidth, y * 2 * windowHeight, windowWidth, windowHeight);
     }
   }
@@ -61,7 +59,7 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
     for await (const event of stream) {
       const payload = event.PAYL;
       if (payload instanceof Uint8Array) {
-        display = payload;
+        frame = payload;
         renderLighthouseView(view);
       } else {
         logger.info(`Got event ${JSON.stringify(payload)}`);
