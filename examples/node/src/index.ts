@@ -1,5 +1,5 @@
 import * as nighthouse from "nighthouse/node";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/node";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger, isInputEvent } from "nighthouse/node";
 import * as process from "process";
 
 const logger = new Logger(new ConsoleLogHandler());
@@ -28,12 +28,14 @@ function getEnv(name: string): string {
   logger.info('Connected!');
 
   // Register input handlers
-  lh.addKeyHandler(event => {
-    logger.info(`Got key event ${JSON.stringify(event)}`);
-  });
-
-  // Request stream for user's model
-  await lh.requestStream();
+  (async () => {
+    for await (const event of await lh.streamModel()) {
+      const payload = event.PAYL;
+      if (isInputEvent(payload)) {
+        logger.info(`Got event ${JSON.stringify(payload)}`);
+      }
+    }
+  })();
 
   // Send some colors
   const values = new Uint8Array(LIGHTHOUSE_WINDOWS * 3);
@@ -45,5 +47,5 @@ function getEnv(name: string): string {
     values[i++] = g;
     values[i++] = b;
   }
-  await lh.sendDisplay(values);
+  await lh.putModel(values);
 })();

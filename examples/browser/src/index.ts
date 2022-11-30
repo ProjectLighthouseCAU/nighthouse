@@ -1,11 +1,11 @@
 import * as nighthouse from "nighthouse/browser";
-import { Auth, Connection, ConsoleLogHandler, LIGHTHOUSE_HEIGHT, LIGHTHOUSE_WIDTH, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
+import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_WINDOWS, Logger } from "nighthouse/browser";
 
 import '../styles.css';
 
 const logger = new Logger(new ConsoleLogHandler());
 
-let lh: Connection | undefined;
+let lh: Lighthouse | undefined;
 let display = new Uint8Array(3 * LIGHTHOUSE_WINDOWS);
 
 function renderLighthouseView(view: HTMLCanvasElement): void {
@@ -13,12 +13,12 @@ function renderLighthouseView(view: HTMLCanvasElement): void {
   ctx.fillStyle = '#111111';
   ctx.fillRect(0, 0, view.width, view.height);
 
-  const windowWidth = Math.round(view.width / LIGHTHOUSE_WIDTH);
-  const windowHeight = Math.round(view.height / (2 * LIGHTHOUSE_HEIGHT));
+  const windowWidth = Math.round(view.width / LIGHTHOUSE_COLS);
+  const windowHeight = Math.round(view.height / (2 * LIGHTHOUSE_ROWS));
 
-  for (let y = 0; y < LIGHTHOUSE_HEIGHT; y++) {
-    for (let x = 0; x < LIGHTHOUSE_WIDTH; x++) {
-      const i = 3 * (y * LIGHTHOUSE_WIDTH + x);
+  for (let y = 0; y < LIGHTHOUSE_ROWS; y++) {
+    for (let x = 0; x < LIGHTHOUSE_COLS; x++) {
+      const i = 3 * (y * LIGHTHOUSE_COLS + x);
       const r = display[i];
       const g = display[i + 1];
       const b = display[i + 2];
@@ -30,7 +30,7 @@ function renderLighthouseView(view: HTMLCanvasElement): void {
 
 function resizeLighthouseView(view: HTMLCanvasElement): void {
   const innerSize = Math.min(window.innerHeight, window.innerWidth);
-  const newSize = Math.floor((0.9 * innerSize) / LIGHTHOUSE_HEIGHT) * LIGHTHOUSE_HEIGHT;
+  const newSize = Math.floor((0.9 * innerSize) / LIGHTHOUSE_ROWS) * LIGHTHOUSE_ROWS;
   if (Math.abs(view.height - newSize) > 10) {
     view.width = newSize;
     view.height = newSize;
@@ -56,25 +56,30 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
   logger.info('Connected!');
 
   // Register event handlers
-  lh.addKeyHandler(event => {
-    logger.info(`Got key event ${JSON.stringify(event)}`);
-  });
-  lh.addDisplayHandler(event => {
-    display = event;
-    renderLighthouseView(view);
-  });
+  const stream = await lh.streamModel();
+  (async () => {
+    for await (const event of stream) {
+      const payload = event.PAYL;
+      if (payload instanceof Uint8Array) {
+        display = payload;
+        renderLighthouseView(view);
+      } else {
+        logger.info(`Got event ${JSON.stringify(payload)}`);
+      }
+    }
+  })();
 
   // Add key listeners
   view.tabIndex = 0;
   view.addEventListener('keydown', event => {
-    lh.sendInput({
+    lh.putModel({
       dwn: true,
       src: 0, // TODO: Provide a meaningful value
       key: event.keyCode,
     });
   });
   view.addEventListener('keyup', event => {
-    lh.sendInput({
+    lh.putModel({
       dwn: false,
       src: 0, // TODO: Provide a meaningful value
       key: event.keyCode,
@@ -83,9 +88,6 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
   view.addEventListener('resize', () => {
     renderLighthouseView(view);
   });
-
-  // Request stream for user's model
-  await lh.requestStream();
 }
 
 window.addEventListener('load', () => {
