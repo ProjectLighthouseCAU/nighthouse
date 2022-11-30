@@ -59,11 +59,12 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
   const stream = await lh.streamModel();
   (async () => {
     for await (const event of stream) {
-      if (event instanceof Uint8Array) {
-        display = event;
+      const payload = event.PAYL;
+      if (payload instanceof Uint8Array) {
+        display = payload;
         renderLighthouseView(view);
       } else {
-        logger.info(`Got event ${JSON.stringify(event)}`);
+        logger.info(`Got event ${JSON.stringify(payload)}`);
       }
     }
   })();
