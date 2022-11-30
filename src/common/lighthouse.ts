@@ -82,24 +82,40 @@ export class Lighthouse {
   /** Receives a response for the given request id. */
   private async receiveSingle(id: number): Promise<ServerMessage<unknown>> {
     return new Promise((resolve, reject) => {
-      this.responseHandlers[id] = (message: ServerMessage<unknown>) => {
+      this.responseHandlers.set(id, (message: ServerMessage<unknown>) => {
+        this.responseHandlers.delete(id);
         if (message.RNUM === 200) {
           resolve(message);
         } else {
           reject(JSON.stringify(message));
         }
-        this.responseHandlers.delete(id);
-      };
+      });
     });
   }
 
   /** Receives a stream of responses for the given request id. */
   private async* receiveStreaming(id: number): AsyncIterable<ServerMessage<unknown>> {
     try {
+      const nextPromises = [];
+
+      const pushPromise = () => {
+        nextPromises.push(new Promise((resolve, reject) => {
+          // TODO: Error handling, perhaps factor it out from receiveSingle?
+          this.responseHandlers.set(id, (message: ServerMessage<unknown>) => {
+            pushPromise();
+            resolve(message);
+          });
+        }));
+      }
+
+      pushPromise();
+
       while (true) {
-        yield await this.receiveSingle(id);
+        const promise = nextPromises.shift();
+        yield await promise;
       }
     } finally {
+      this.logger.debug(`Deleting stream handler for ${id}`);
       this.responseHandlers.delete(id);
     }
   }
@@ -110,7 +126,6 @@ export class Lighthouse {
     if (responseHandler) {
       // A response handler exists, invoke it.
       responseHandler(message);
-      this.responseHandlers.delete(message.REID);
     } else {
       // No response handler exists, treat it as an independent event.
       if (this.eventHandlers.length > 0) {
@@ -118,7 +133,7 @@ export class Lighthouse {
           eventHandler(message);
         }
       } else {
-        this.logger.warning(`Got unhandled event: ${JSON.stringify(message)}`);
+        this.logger.warning(`Got unhandled event for id ${message.REID}`);
       }
     }
   }

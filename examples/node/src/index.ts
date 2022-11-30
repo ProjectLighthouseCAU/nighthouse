@@ -28,11 +28,11 @@ function getEnv(name: string): string {
   logger.info('Connected!');
 
   // Register input handlers
-  const stream = await lh.streamModel();
   (async () => {
-    for await (const event of stream) {
-      if (isInputEvent(event)) {
-        logger.info(`Got event ${JSON.stringify(event)}`);
+    for await (const event of await lh.streamModel()) {
+      const payload = event.PAYL;
+      if (isInputEvent(payload)) {
+        logger.info(`Got event ${JSON.stringify(payload)}`);
       }
     }
   })();
