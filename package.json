@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",
-    "prepack": "npm run build",
+    "prepare": "npm run build",
     "generate-docs": "typedoc"
   },
   "author": "fwcd",
