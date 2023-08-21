@@ -1,7 +1,7 @@
 {
   "name": "nighthouse-example-node",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Example showcasing Nighthouse in a simple Node app",
   "author": "fwcd",
   "license": "MIT",
@@ -13,10 +13,10 @@
     "start": "node lib/index.js"
   },
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "nighthouse": "file:../..",
-    "ws": "^8.11.0"
+    "ws": "^8.13.0"
   }
 }

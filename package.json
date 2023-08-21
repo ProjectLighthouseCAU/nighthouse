@@ -14,15 +14,15 @@
   "author": "fwcd",
   "license": "MIT",
   "dependencies": {
-    "@msgpack/msgpack": "^2.7.2"
+    "@msgpack/msgpack": "^3.0.0-beta2"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
-    "typedoc": "^0.23.24",
-    "typescript": "^4.9.4"
+    "typedoc": "^0.24.8",
+    "typescript": "^5.1.6"
   },
   "peerDependencies": {
-    "ws": "^8.11.0"
+    "ws": "^8.13.0"
   },
   "peerDependenciesMeta": {
     "ws": {
