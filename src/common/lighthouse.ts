@@ -42,8 +42,8 @@ export class Lighthouse {
   }
 
   /** Streams the user's model (including e.g. key/controller events). */
-  async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
-    return this.stream('STREAM', ['user', user, 'model'], {});
+  async *streamModel(user: string = this.auth.USER): AsyncIterable<ServerMessage<unknown>> {
+    yield* this.stream('STREAM', ['user', user, 'model'], {});
   }
 
   /** Performs a single request to the given path with the given payload. */
@@ -53,9 +53,9 @@ export class Lighthouse {
   }
 
   /** Performs a streaming request to the given path with the given payload. */
-  async stream<T>(verb: StreamingVerb, path: string[], payload: T): Promise<AsyncIterable<ServerMessage<unknown>>> {
+  async *stream<T>(verb: StreamingVerb, path: string[], payload: T): AsyncIterable<ServerMessage<unknown>> {
     const requestId = await this.sendRequest(verb, path, payload);
-    return this.receiveStreaming(requestId);
+    yield* this.receiveStreaming(requestId);
   }
 
   /** Sends a request. */
