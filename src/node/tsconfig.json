@@ -6,6 +6,7 @@
   "compilerOptions": {
     "tsBuildInfoFile": "../../out/node/compile.tsbuildinfo",
     "rootDir": ".",
-    "outDir": "../../out/node"
+    "outDir": "../../out/node",
+    "lib": ["ES2018"]
   }
 }
