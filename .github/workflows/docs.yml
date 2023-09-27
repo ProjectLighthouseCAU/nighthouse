@@ -20,6 +20,7 @@ concurrency:
 jobs:
   docs:
     runs-on: ubuntu-latest
+    if: github.repository == 'fwcd/nighthouse'
 
     steps:
     - uses: actions/checkout@v3
