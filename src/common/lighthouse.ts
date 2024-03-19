@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, InputEvent, isServerMessage, ServerMessage, SingleVerb, StreamingVerb, Verb } from "./types";
+import { Auth, ClientMessage, InputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./types";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 
@@ -43,7 +43,7 @@ export class Lighthouse {
 
   /** Streams the user's model (including e.g. key/controller events). */
   async *streamModel(user: string = this.auth.USER): AsyncIterable<ServerMessage<unknown>> {
-    yield* this.stream('STREAM', ['user', user, 'model'], {});
+    yield* this.stream(['user', user, 'model'], {});
   }
 
   /** Combines PUT and CREATE. Requires CREATE and WRITE permission. */
@@ -88,8 +88,8 @@ export class Lighthouse {
   }
 
   /** Performs a streaming request to the given path with the given payload. */
-  async *stream<T>(verb: StreamingVerb, path: string[], payload: T): AsyncIterable<ServerMessage<unknown>> {
-    const requestId = await this.sendRequest(verb, path, payload);
+  async *stream<T>(path: string[], payload: T): AsyncIterable<ServerMessage<unknown>> {
+    const requestId = await this.sendRequest('STREAM', path, payload);
     yield* this.receiveStreaming(requestId);
   }
 

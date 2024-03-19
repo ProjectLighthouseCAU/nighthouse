@@ -1,11 +1,8 @@
 /** A single (one-off) request verb. */
 export type SingleVerb = 'POST' | 'CREATE' | 'MKDIR' | 'DELETE' | 'LIST' | 'GET' | 'PUT' | 'STOP' | 'LINK' | 'UNLINK';
 
-/** A streaming request verb. */
-export type StreamingVerb = 'STREAM';
-
 /** A request verb. */
-export type Verb = SingleVerb | StreamingVerb;
+export type Verb = SingleVerb | 'STREAM';
 
 /** Authentication credentials. */
 export interface Auth {
