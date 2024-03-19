@@ -1,5 +1,5 @@
-import { LogHandler, LogLevel } from "./log";
-import { Auth } from "./types";
+import { LogHandler } from "./log";
+import { Auth } from "./protocol";
 
 /** Configuration options for a lighthouse connection. */
 export interface Options {
