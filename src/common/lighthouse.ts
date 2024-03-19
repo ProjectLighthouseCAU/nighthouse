@@ -38,12 +38,47 @@ export class Lighthouse {
 
   /** Sends a frame or an input event to the user's model. */
   async putModel(payload: Uint8Array | InputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
-    return this.perform('PUT', ['user', user, 'model'], payload);
+    return this.put(['user', user, 'model'], payload);
   }
 
   /** Streams the user's model (including e.g. key/controller events). */
   async *streamModel(user: string = this.auth.USER): AsyncIterable<ServerMessage<unknown>> {
     yield* this.stream('STREAM', ['user', user, 'model'], {});
+  }
+
+  /** Combines PUT and CREATE. Requires CREATE and WRITE permission. */
+  async post<T>(path: string[], payload: T): Promise<ServerMessage<unknown>> {
+    return await this.perform('POST', path, payload);
+  }
+
+  /** Updates the resource at the given path with the given payload. Requires WRITE permission. */
+  async put<T>(path: string[], payload: T): Promise<ServerMessage<unknown>> {
+    return await this.perform('PUT', path, payload);
+  }
+
+  /** Creates a resource at the given path. Requires CREATE permission. */
+  async create(path: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('CREATE', path, {});
+  }
+
+  /** Deletes a resource at the given path. Requires DELETE permission. */
+  async delete(path: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('DELETE', path, {});
+  }
+
+  /** Creates a directory at the given path. Requires CREATE permission. */
+  async mkdir(path: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('MKDIR', path, {});
+  }
+
+  /** Lists the directory tree at the given path. Requires READ permission. */
+  async list(path: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('LIST', path, {});
+  }
+
+  /** Gets the resource at the given path. Requires READ permission. */
+  async get(path: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('GET', path, {});
   }
 
   /** Performs a single request to the given path with the given payload. */
