@@ -81,6 +81,16 @@ export class Lighthouse {
     return await this.perform('GET', path, {});
   }
 
+  /** Links the given source to the given destination path. Requires WRITE permission for the destination and READ for the source. */
+  async link(srcPath: string[], destPath: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('LINK', destPath, srcPath);
+  }
+
+  /** Unlinks the given source from the given destination path. Requires WRITE permission for the destination. */
+  async unlink(srcPath: string[], destPath: string[]): Promise<ServerMessage<unknown>> {
+    return await this.perform('UNLINK', destPath, srcPath);
+  }
+
   /** Performs a single request to the given path with the given payload. */
   async perform<T>(verb: SingleVerb, path: string[], payload: T): Promise<ServerMessage<unknown>> {
     const requestId = await this.sendRequest(verb, path, payload);
