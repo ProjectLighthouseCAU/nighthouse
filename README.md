@@ -1,5 +1,6 @@
 # Nighthouse
 
+[![npm](https://img.shields.io/npm/v/nighthouse)](https://www.npmjs.com/package/nighthouse)
 [![Build](https://github.com/fwcd/nighthouse/actions/workflows/build.yml/badge.svg)](https://github.com/fwcd/nighthouse/actions/workflows/build.yml)
 [![Docs](https://github.com/fwcd/nighthouse/actions/workflows/docs.yml/badge.svg)](https://fwcd.github.io/nighthouse)
 
