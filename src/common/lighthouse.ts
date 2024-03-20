@@ -38,7 +38,7 @@ export class Lighthouse {
 
   /** Sends a frame or an input event to the user's model. */
   async putModel(payload: Uint8Array | InputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
-    return this.put(['user', user, 'model'], payload);
+    return await this.put(['user', user, 'model'], payload);
   }
 
   /** Streams the user's model (including e.g. key/controller events). */
