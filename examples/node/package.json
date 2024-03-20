@@ -1,7 +1,7 @@
 {
   "name": "nighthouse-example-node",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Example showcasing Nighthouse in a simple Node app",
   "author": "fwcd",
   "license": "MIT",
