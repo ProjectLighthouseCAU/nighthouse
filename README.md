@@ -1,8 +1,8 @@
 # Nighthouse
 
 [![npm](https://img.shields.io/npm/v/nighthouse)](https://www.npmjs.com/package/nighthouse)
-[![Build](https://github.com/fwcd/nighthouse/actions/workflows/build.yml/badge.svg)](https://github.com/fwcd/nighthouse/actions/workflows/build.yml)
-[![Docs](https://github.com/fwcd/nighthouse/actions/workflows/docs.yml/badge.svg)](https://fwcd.github.io/nighthouse)
+[![Build](https://github.com/ProjectLighthouseCAU/nighthouse/actions/workflows/build.yml/badge.svg)](https://github.com/ProjectLighthouseCAU/nighthouse/actions/workflows/build.yml)
+[![Docs](https://github.com/ProjectLighthouseCAU/nighthouse/actions/workflows/docs.yml/badge.svg)](https://projectlighthousecau.github.io/nighthouse)
 
 A lightweight, asynchronous Project Lighthouse client for JavaScript that runs both in the browser and Node.js environments.
 
