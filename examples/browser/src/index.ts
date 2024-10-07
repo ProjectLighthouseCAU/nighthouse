@@ -1,9 +1,9 @@
 import * as nighthouse from "nighthouse/browser";
-import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_FRAME_BYTES, LIGHTHOUSE_COLOR_CHANNELS, Logger } from "nighthouse/browser";
+import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_FRAME_BYTES, LIGHTHOUSE_COLOR_CHANNELS, Logger, LeveledLogHandler, LogLevel } from "nighthouse/browser";
 
 import '../styles.css';
 
-const logger = new Logger(new ConsoleLogHandler());
+const logger = new Logger(new LeveledLogHandler(LogLevel.Debug, new ConsoleLogHandler()));
 
 let lh: Lighthouse | undefined;
 let frame = new Uint8Array(LIGHTHOUSE_FRAME_BYTES);

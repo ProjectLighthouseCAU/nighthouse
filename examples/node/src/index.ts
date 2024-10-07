@@ -1,8 +1,8 @@
 import * as nighthouse from "nighthouse/node";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, Logger, isInputEvent } from "nighthouse/node";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, LeveledLogHandler, LogLevel, Logger, isInputEvent } from "nighthouse/node";
 import * as process from "process";
 
-const logger = new Logger(new ConsoleLogHandler());
+const logger = new Logger(new LeveledLogHandler(LogLevel.Debug, new ConsoleLogHandler()));
 
 function getEnv(name: string): string {
   const value = process.env[name];
