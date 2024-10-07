@@ -4,6 +4,7 @@ import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 import { LaserMetrics } from "./protocol/metrics";
 import { Deferred } from "./deferred";
+import { LighthouseClosedError } from "./error";
 
 /** A connection to the lighthouse. */
 export class Lighthouse {
@@ -170,7 +171,7 @@ export class Lighthouse {
 
   async close(): Promise<void> {
     for (const [id, handler] of this.responseHandlers.entries()) {
-      handler.reject(`The lighthouse connection was closed while waiting for response with id ${id}`);
+      handler.reject(new LighthouseClosedError(`The lighthouse connection was closed while waiting for response with id ${id}`));
     }
     await this.transport.close();
   }

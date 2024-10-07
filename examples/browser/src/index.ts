@@ -1,5 +1,5 @@
 import * as nighthouse from "nighthouse/browser";
-import { Auth, Lighthouse, ConsoleLogHandler, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_FRAME_BYTES, LIGHTHOUSE_COLOR_CHANNELS, Logger, LeveledLogHandler, LogLevel } from "nighthouse/browser";
+import { Auth, Lighthouse, ConsoleLogHandler, LighthouseClosedError, LIGHTHOUSE_ROWS, LIGHTHOUSE_COLS, LIGHTHOUSE_FRAME_BYTES, LIGHTHOUSE_COLOR_CHANNELS, Logger, LeveledLogHandler, LogLevel } from "nighthouse/browser";
 
 import '../styles.css';
 
@@ -67,7 +67,11 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
         }
       }
     } catch (error) {
-      logger.info(`Stream closed: ${error}`);
+      if (error instanceof LighthouseClosedError) {
+        logger.info(`Stream closed`);
+      } else {
+        logger.error(`Stream errored: ${error}`);
+      }
     }
   })();
 
