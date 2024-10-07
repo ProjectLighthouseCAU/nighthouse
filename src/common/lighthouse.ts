@@ -169,8 +169,8 @@ export class Lighthouse {
   }
 
   async close(): Promise<void> {
-    for (const handler of this.responseHandlers.values()) {
-      handler.reject("Lighthouse connection was closed");
+    for (const [id, handler] of this.responseHandlers.entries()) {
+      handler.reject(`The lighthouse connection was closed while waiting for response with id ${id}`);
     }
     await this.transport.close();
   }
