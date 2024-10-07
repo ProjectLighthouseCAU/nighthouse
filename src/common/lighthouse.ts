@@ -14,6 +14,9 @@ export class Lighthouse {
   /** Handlers for response messages. */
   private responseHandlers: Map<number, Deferred<ServerMessage<unknown>>> = new Map();
 
+  /** Whether the transport has been closed. */
+  private isClosed = false;
+
   constructor(
     private readonly auth: Auth,
     private readonly transport: Transport,
@@ -126,12 +129,19 @@ export class Lighthouse {
 
   /** Sends a client message. */
   async send<P>(message: ClientMessage<P>): Promise<void> {
+    if (this.isClosed) {
+      throw new LighthouseClosedError(`Cannot send message after lighthouse connection has been closed: ${JSON.stringify(message)}`)
+    }
     const raw = this.coder.encode(message);
     await this.transport.send(raw);
   }
 
   /** Receives a response for the given request id. */
   private async receiveSingle(id: number): Promise<ServerMessage<unknown>> {
+    if (this.isClosed) {
+      throw new LighthouseClosedError(`Cannot receive message for id ${id} after lighthouse connection has been closed`);
+    }
+
     const deferred = new Deferred<ServerMessage<unknown>>();
 
     this.logger.trace(`Registering handler for ${id}`);
@@ -170,6 +180,11 @@ export class Lighthouse {
   }
 
   async close(): Promise<void> {
+    if (this.isClosed) {
+      this.logger.warning(`Lighthouse is already closed, ignoring close.`);
+      return;
+    }
+    this.isClosed = true;
     for (const [id, handler] of this.responseHandlers.entries()) {
       handler.reject(new LighthouseClosedError(`The lighthouse connection was closed while waiting for response with id ${id}`));
     }
