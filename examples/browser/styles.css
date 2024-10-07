@@ -23,18 +23,18 @@ h1 {
   margin: 10px;
 }
 
-.grid-form {
+.form-grid {
   display: grid;
   grid-template-columns: auto 1fr;
   padding: 12px;
 }
 
-.grid-form label {
+.form-grid label {
   padding: 5px;
   text-align: left;
 }
 
-.grid-form input {
+.form-grid input {
   background-color: rgba(255, 255, 255, 0.1);
   border: 0;
   color: white;

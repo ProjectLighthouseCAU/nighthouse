@@ -7,15 +7,17 @@
   <body>
     <header>
       <h1>Nighthouse Demo</h1>
-      <div class="grid-form">
-        <label for="url">Lighthouse URL:</label>
-        <input type="text" name="url" id="lighthouse-url" value="wss://lighthouse.uni-kiel.de/websocket" placeholder="ws://..." />
-        <label for="user">Username:</label>
-        <input type="text" name="user" id="lighthouse-user" placeholder="Your username" />
-        <label for="token">API Token:</label>
-        <input type="text" name="token" id="lighthouse-token" placeholder="Your API token" />
-      </div>
-      <button id="lighthouse-connect">Connect</button>
+      <form id="lighthouse-connect-form">
+        <div class="form-grid">
+          <label for="url">Lighthouse URL:</label>
+          <input type="text" name="url" id="lighthouse-url" value="wss://lighthouse.uni-kiel.de/websocket" placeholder="ws://..." />
+          <label for="user">Username:</label>
+          <input type="text" name="user" id="lighthouse-user" placeholder="Your username" />
+          <label for="token">API Token:</label>
+          <input type="text" name="token" id="lighthouse-token" placeholder="Your API token" />
+        </div>
+        <input type="submit" value="Connect" />
+      </form>
     </header>
     <main>
       <canvas id="lighthouse-view"></canvas>

@@ -89,10 +89,10 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
 }
 
 window.addEventListener('load', () => {
+  const connectForm = document.getElementById('lighthouse-connect-form') as HTMLFormElement;
   const urlField = document.getElementById('lighthouse-url') as HTMLInputElement;
   const userField = document.getElementById('lighthouse-user') as HTMLInputElement;
   const tokenField = document.getElementById('lighthouse-token') as HTMLInputElement;
-  const connectButton = document.getElementById('lighthouse-connect') as HTMLButtonElement;
   const view = document.getElementById('lighthouse-view') as HTMLCanvasElement;
 
   // Handle window sizing
@@ -102,7 +102,8 @@ window.addEventListener('load', () => {
   resizeLighthouseView(view);
 
   // Set up lighthouse connection listener
-  connectButton.addEventListener('click', async () => {
+  connectForm.addEventListener('submit', async e => {
+    e.preventDefault();
     const auth: Auth = { USER: userField.value, TOKEN: tokenField.value };
     connectToLighthouse(urlField.value, auth, view);
   });
