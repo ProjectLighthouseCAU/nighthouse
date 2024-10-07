@@ -1,6 +1,7 @@
 /** A log message severity. */
 export enum LogLevel {
-  Debug = 0,
+  Trace = -1,
+  Debug,
   Info,
   Warning,
   Error
@@ -32,6 +33,7 @@ export class ConsoleLogHandler implements LogHandler {
 
   private formatLevel(level: LogLevel): string {
     switch (level) {
+    case LogLevel.Trace: return 'Trace';
     case LogLevel.Debug: return 'Debug';
     case LogLevel.Info: return 'Info';
     case LogLevel.Warning: return 'Warning';
@@ -61,6 +63,11 @@ export class Logger implements LogHandler {
   /** Logs the given message at the given level. */
   log(level: LogLevel, msg: string): void {
     this.handler.log(level, msg);
+  }
+
+  /** Logs the given message at the trace level. */
+  trace(msg: string): void {
+    this.log(LogLevel.Trace, msg);
   }
 
   /** Logs the given message at the debug level. */

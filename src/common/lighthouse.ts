@@ -133,7 +133,7 @@ export class Lighthouse {
   private async receiveSingle(id: number): Promise<ServerMessage<unknown>> {
     const deferred = new Deferred<ServerMessage<unknown>>();
 
-    this.logger.debug(`Registering handler for ${id}`);
+    this.logger.trace(`Registering handler for ${id}`);
     this.responseHandlers.set(id, deferred);
 
     try {
@@ -144,7 +144,7 @@ export class Lighthouse {
         throw new Error(`Got status ${message.RNUM} for ${id}: ${JSON.stringify(message)}`);
       }
     } finally {
-      this.logger.debug(`Deleting handler for ${id}`);
+      this.logger.trace(`Deleting handler for ${id}`);
       this.responseHandlers.delete(id);
     }
   }
