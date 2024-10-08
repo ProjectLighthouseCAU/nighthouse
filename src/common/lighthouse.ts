@@ -109,7 +109,13 @@ export class Lighthouse {
   /** Performs a streaming request to the given path with the given payload. */
   async *stream<T>(path: string[], payload: T): AsyncIterable<ServerMessage<unknown>> {
     const requestId = await this.sendRequest('STREAM', path, payload);
-    yield* this.receiveStreaming(requestId);
+    try {
+      this.logger.debug(() => `Starting stream from ${JSON.stringify(path)}...`);
+      yield* this.receiveStreaming(requestId);
+    } finally {
+      this.logger.debug(() => `Stopping stream from ${JSON.stringify(path)}...`);
+      await this.sendRequest('STOP', path, {});
+    }
   }
 
   /** Sends a request. */
