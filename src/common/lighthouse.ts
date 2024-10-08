@@ -4,7 +4,7 @@ import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 import { LaserMetrics } from "./protocol/metrics";
 import { Deferred } from "./deferred";
-import { LighthouseClosedError } from "./error";
+import { LighthouseClosedError, LighthouseResponseError } from "./error";
 
 /** A connection to the lighthouse. */
 export class Lighthouse {
@@ -152,7 +152,7 @@ export class Lighthouse {
       if (message.RNUM === 200) {
         return message;
       } else {
-        throw new Error(`Got status ${message.RNUM} for ${id}: ${JSON.stringify(message)}`);
+        throw new LighthouseResponseError(id, message);
       }
     } finally {
       this.logger.trace(`Deleting handler for ${id}`);
