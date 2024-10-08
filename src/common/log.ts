@@ -10,7 +10,7 @@ export enum LogLevel {
 /** A consumer of log messages. */
 export interface LogHandler {
   /** Logs the given message at the given level. */
-  log(level: LogLevel, msg: string): void;
+  log(level: LogLevel, msg: string | (() => string)): void;
 }
 
 /** A simple logger that swallows the messages and does nothing. */
@@ -24,8 +24,9 @@ export class NoopLogHandler implements LogHandler {
 export class ConsoleLogHandler implements LogHandler {
   constructor(private readonly prefix: string = '') {}
 
-  log(level: LogLevel, msg: string): void {
-    const formatted = `${this.prefix}[${this.formatLevel(level)}] ${msg}`;
+  log(level: LogLevel, msg: string | (() => string)): void {
+    const msgString = typeof msg === 'function' ? msg() : msg;
+    const formatted = `${this.prefix}[${this.formatLevel(level)}] ${msgString}`;
     if (level >= LogLevel.Error) {
       console.error(formatted);
     } else {
@@ -51,7 +52,7 @@ export class LeveledLogHandler implements LogHandler {
     private readonly handler: LogHandler
   ) {}
 
-  log(level: LogLevel, msg: string): void {
+  log(level: LogLevel, msg: string | (() => string)): void {
     if (level >= this.level) {
       this.handler.log(level, msg);
     }
@@ -63,32 +64,32 @@ export class Logger implements LogHandler {
   constructor(private readonly handler: LogHandler) {}
 
   /** Logs the given message at the given level. */
-  log(level: LogLevel, msg: string): void {
+  log(level: LogLevel, msg: string | (() => string)): void {
     this.handler.log(level, msg);
   }
 
   /** Logs the given message at the trace level. */
-  trace(msg: string): void {
+  trace(msg: string | (() => string)): void {
     this.log(LogLevel.Trace, msg);
   }
 
   /** Logs the given message at the debug level. */
-  debug(msg: string): void {
+  debug(msg: string | (() => string)): void {
     this.log(LogLevel.Debug, msg);
   }
 
   /** Logs the given message at the info level. */
-  info(msg: string): void {
+  info(msg: string | (() => string)): void {
     this.log(LogLevel.Info, msg);
   }
 
   /** Logs the given message at the warning level. */
-  warning(msg: string): void {
+  warning(msg: string | (() => string)): void {
     this.log(LogLevel.Warning, msg);
   }
 
   /** Logs the given message at the error level. */
-  error(msg: string): void {
+  error(msg: string | (() => string)): void {
     this.log(LogLevel.Error, msg);
   }
 }
