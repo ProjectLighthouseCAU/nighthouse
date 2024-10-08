@@ -166,10 +166,11 @@ export class Lighthouse {
     // in a loop to deal with the scenario where the server sends messages
     // faster than we clients can process them.
 
-    try {
-      const nextPromises = [];
+    const nextPromises = [];
 
+    try {
       const pushPromise = () => {
+        this.logger.trace(`Pushing promise for next response to request ${id}`);
         const deferred = new Deferred<ServerMessage<unknown>>();
         this.responseHandlers.set(id, deferred);
         nextPromises.push(deferred.promise.then(message => {
@@ -185,7 +186,7 @@ export class Lighthouse {
         yield await promise;
       }
     } finally {
-      this.logger.trace(`Deleting stream handler for ${id}`);
+      this.logger.trace(`Deleting stream handler for request ${id}`);
       this.responseHandlers.delete(id);
     }
   }
