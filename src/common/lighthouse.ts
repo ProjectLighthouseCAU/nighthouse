@@ -192,6 +192,9 @@ export class Lighthouse {
         const promise = nextPromises.shift();
         yield await promise;
       }
+    } catch (e) {
+      this.logger.trace(`Error while receiving streaming responses to request ${id}: ${e}`);
+      throw e;
     } finally {
       this.logger.trace(`Deleting stream handler for request ${id}`);
       this.responseHandlers.delete(id);
