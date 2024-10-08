@@ -166,7 +166,7 @@ export class Lighthouse {
     // in a loop to deal with the scenario where the server sends messages
     // faster than we clients can process them.
 
-    const nextPromises = [];
+    const nextPromises: Promise<ServerMessage<unknown>>[] = [];
 
     try {
       const pushPromise = () => {
