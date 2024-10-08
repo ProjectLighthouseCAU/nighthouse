@@ -178,17 +178,25 @@ export class Lighthouse {
     try {
       const pushPromise = () => {
         this.logger.trace(`Pushing promise for next response to request ${id}`);
-        const deferred = new Deferred<ServerMessage<unknown>>();
-        this.responseHandlers.set(id, deferred);
-        nextPromises.push(deferred.promise.then(message => {
-          pushPromise();
-          return message;
-        }));
+
+        const responseHandler = new Deferred<ServerMessage<unknown>>();
+        this.responseHandlers.set(id, responseHandler);
+
+        const nextDeferred = new Deferred<ServerMessage<unknown>>();
+        nextPromises.push(nextDeferred.promise);
+
+        responseHandler.promise
+          .then(response => {
+            pushPromise();
+            nextDeferred.resolve(response);
+          })
+          .catch(nextDeferred.reject);
       }
 
       pushPromise();
 
       while (true) {
+        console.assert(nextPromises.length > 0);
         const promise = nextPromises.shift();
         yield await promise;
       }
