@@ -22,8 +22,10 @@ export class NoopLogHandler implements LogHandler {
 
 /** A simple logger that logs to the console. */
 export class ConsoleLogHandler implements LogHandler {
+  constructor(private readonly prefix: string = '') {}
+
   log(level: LogLevel, msg: string): void {
-    const formatted = `[${this.formatLevel(level)}] ${msg}`;
+    const formatted = `${this.prefix}[${this.formatLevel(level)}] ${msg}`;
     if (level >= LogLevel.Error) {
       console.error(formatted);
     } else {
