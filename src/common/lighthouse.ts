@@ -162,8 +162,31 @@ export class Lighthouse {
 
   /** Receives a stream of responses for the given request id. */
   private async* receiveStreaming(id: number): AsyncIterable<ServerMessage<unknown>> {
-    while (true) {
-      yield await this.receiveSingle(id);
+    // We use a queue of promises instead of naively performing `receiveSingle`
+    // in a loop to deal with the scenario where the server sends messages
+    // faster than we clients can process them.
+
+    try {
+      const nextPromises = [];
+
+      const pushPromise = () => {
+        const deferred = new Deferred<ServerMessage<unknown>>();
+        this.responseHandlers.set(id, deferred);
+        nextPromises.push(deferred.promise.then(message => {
+          pushPromise();
+          return message;
+        }));
+      }
+
+      pushPromise();
+
+      while (true) {
+        const promise = nextPromises.shift();
+        yield await promise;
+      }
+    } finally {
+      this.logger.trace(`Deleting stream handler for ${id}`);
+      this.responseHandlers.delete(id);
     }
   }
 
