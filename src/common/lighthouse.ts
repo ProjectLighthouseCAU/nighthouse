@@ -132,6 +132,7 @@ export class Lighthouse {
     if (this.isClosed) {
       throw new LighthouseClosedError(`Cannot send message after lighthouse connection has been closed: ${JSON.stringify(message)}`)
     }
+    this.logger.debug(() => `Sending ${JSON.stringify(message)}`);
     const raw = this.coder.encode(message);
     await this.transport.send(raw);
   }
