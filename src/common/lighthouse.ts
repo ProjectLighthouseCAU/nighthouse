@@ -6,6 +6,10 @@ import { LaserMetrics } from "./protocol/metrics";
 import { Deferred } from "./deferred";
 import { LighthouseClosedError, LighthouseResponseError } from "./error";
 
+interface StreamedResource {
+  requestIds: number[];
+}
+
 /** A connection to the lighthouse. */
 export class Lighthouse {
   /** The current request id. Automatically increments for every request. */
@@ -16,6 +20,9 @@ export class Lighthouse {
 
   /** Out-of-order received messages, e.g. if a response is faster than the response handler is registered. */
   private outOfOrderMessages: Map<number, ServerMessage<unknown>[]> = new Map();
+
+  /** Streamed resources, keyed by a path array encoded as JSON string. */
+  private streamedResources: Map<string, StreamedResource> = new Map();
 
   /** Whether the transport has been closed. */
   private isClosed = false;
@@ -111,13 +118,38 @@ export class Lighthouse {
 
   /** Performs a streaming request to the given path with the given payload. */
   async *stream<T>(path: string[], payload?: T): AsyncIterable<ServerMessage<unknown>> {
-    const requestId = await this.sendRequest('STREAM', path, payload ?? {});
+    const key = JSON.stringify(path);
+    let requestId: number;
+
+    if (this.streamedResources.has(key)) {
+      // This path is already being streamed, we only need to add a handler and
+      // don't send a `STREAM` request. This request id in this case is only
+      // for tracking our client-side handler and not sent to the server.
+      requestId = this.requestId++;
+      const streamedResource = this.streamedResources.get(key)
+      this.streamedResources.set(key, { ...streamedResource, requestIds: [...streamedResource.requestIds, requestId] });
+    } else {
+      // This path has not been streamed yet.
+      requestId = await this.sendRequest('STREAM', path, payload ?? {});
+      this.streamedResources.set(key, { requestIds: [requestId] });
+    }
+
     try {
       this.logger.debug(() => `Starting stream from ${JSON.stringify(path)}...`);
       yield* this.receiveStreaming(requestId);
     } finally {
-      this.logger.debug(() => `Stopping stream from ${JSON.stringify(path)}...`);
-      await this.sendRequest('STOP', path, {});
+      const sr = this.streamedResources.get(key);
+      if (sr.requestIds.length > 1) {
+        // This path is still being streamed by another consumer
+        // TODO: Assert that sr.requestIds contains our request id (once)
+        this.streamedResources.set(key, { requestIds: sr.requestIds.filter(id => id !== requestId) });
+      } else {
+        // We were the last consumer to stream this path, so we can stop it
+        // TODO: Assert that length === 1 and that this is exactly our request id
+        this.logger.debug(() => `Stopping stream from ${JSON.stringify(path)}...`);
+        await this.sendRequest('STOP', path, {});
+        this.streamedResources.delete(key);
+      }
     }
   }
 
