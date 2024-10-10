@@ -11,7 +11,9 @@ import { LighthouseClosedError, LighthouseResponseError } from "./error";
  * such instance, we demultiplex multiple logical streams of the same resource.
  */
 interface ResourceStream {
-  /** All request ids that we are listening on for this stream. */
+  /** The original request id used to stream from the server. */
+  originalId: number;
+  /** All request ids that are listening for this stream. */
   requestIds: number[];
 }
 
@@ -138,7 +140,7 @@ export class Lighthouse {
       // This path has not been streamed yet.
       requestId = await this.sendRequest('STREAM', path, payload ?? {});
       this.logger.trace(() => `Registering new stream ${requestId} from ${JSON.stringify(path)}...`);
-      this.streamsByPath.set(key, { requestIds: [requestId] });
+      this.streamsByPath.set(key, { originalId: requestId, requestIds: [requestId] });
     }
 
     return (async function* () {
@@ -146,11 +148,11 @@ export class Lighthouse {
         this.logger.debug(() => `Starting stream from ${JSON.stringify(path)}...`);
         yield* this.receiveStreaming(requestId);
       } finally {
-        const sr = this.streamsByPath.get(key);
-        if (sr.requestIds.length > 1) {
+        const stream = this.streamsByPath.get(key);
+        if (stream.requestIds.length > 1) {
           // This path is still being streamed by another consumer
           // TODO: Assert that sr.requestIds contains our request id (once)
-          this.streamsByPath.set(key, { requestIds: sr.requestIds.filter(id => id !== requestId) });
+          this.streamsByPath.set(key, { ...stream, requestIds: stream.requestIds.filter(id => id !== requestId) });
         } else {
           // We were the last consumer to stream this path, so we can stop it
           // TODO: Assert that length === 1 and that this is exactly our request id
@@ -276,7 +278,7 @@ export class Lighthouse {
       responseHandler.resolve(message);
     } else {
       // No response handler exists (yet?), warn about it.
-      const demuxedIds: number[] = [...this.streamsByPath.values()].find(s => s.requestIds.includes(message.REID))?.requestIds ?? [message.REID];
+      const demuxedIds: number[] = [...this.streamsByPath.values()].find(s => s.originalId === message.REID)?.requestIds ?? [message.REID];
       this.logger.warning(() => `Got out-of-order event for id ${message.REID}${demuxedIds.length > 1 ? ` (demuxed to ${JSON.stringify(demuxedIds)})` : ''}`);
       for (const id of demuxedIds) {
         this.outOfOrderMessages.set(id, [...(this.outOfOrderMessages.get(id) ?? []), message]);
