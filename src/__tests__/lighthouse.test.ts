@@ -1,5 +1,4 @@
-import assert from "node:assert";
-import test from "node:test";
+import { expect, jest, test } from '@jest/globals';
 import { MessagePackCoder } from '../common/coder';
 import { Lighthouse } from '../common/lighthouse';
 import { ConsoleLogHandler, Logger } from '../common/log';
@@ -15,7 +14,7 @@ function createLighthouse(responder: (msg: ClientMessage<unknown>) => ServerMess
   return new Lighthouse(auth, transport, logger);
 }
 
-await test('1 + 1', async () => {
+test('getting resource', async () => {
   const lh = createLighthouse(msg => {
     if (isEqual(msg.PATH, ['hello'])) {
       return {
@@ -31,6 +30,6 @@ await test('1 + 1', async () => {
       }
     }
   });
-  assert.strictEqual(await lh.get(['hello']), 'Hello world!');
-  assert.throws(async () => await lh.get(['something', 'else']));
+  expect(await lh.get(['hello'])).toBe('Hello world!');
+  expect(async () => await lh.get(['something', 'else'])).toThrow();
 });
