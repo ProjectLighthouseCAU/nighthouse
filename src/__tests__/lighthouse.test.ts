@@ -15,20 +15,20 @@ function createLighthouse(responder: (msg: ClientMessage<unknown>) => Iterable<S
   return new Lighthouse(auth, transport, logger);
 }
 
+function okResponse<T>(id: number, payload: T): ServerMessage<T> {
+  return { REID: id, RNUM: 200, PAYL: payload };
+}
+
+function errorResponse(id: number): ServerMessage<unknown> {
+  return { REID: id, RNUM: 400, PAYL: {} };
+}
+
 test('getting resource', async () => {
   const lh = createLighthouse(function* (msg) {
     if (msg.VERB === 'GET' && isEqual(msg.PATH, ['hello'])) {
-      yield {
-        REID: msg.REID,
-        RNUM: 200,
-        PAYL: 'Hello world!',
-      };
+      yield okResponse(msg.REID, 'Hello world!');
     } else {
-      yield {
-        REID: msg.REID,
-        RNUM: 400,
-        PAYL: {},
-      }
+      yield errorResponse(msg.REID);
     }
   });
 
@@ -46,18 +46,10 @@ test('streaming user model', async () => {
   const lh = createLighthouse(function* (msg) {
     if (msg.VERB === 'STREAM' && isEqual(msg.PATH, ['user', 'test', 'model'])) {
       for (let i = 0; i < 4; i++) {
-        yield {
-          REID: msg.REID,
-          RNUM: 200,
-          PAYL: `Message ${i}`,
-        };
+        yield okResponse(msg.REID, `Message ${i}`);
       }
     } else {
-      yield {
-        REID: msg.REID,
-        RNUM: 400,
-        PAYL: {},
-      }
+      yield errorResponse(msg.REID);
     }
   });
 
