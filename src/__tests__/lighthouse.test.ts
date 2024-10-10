@@ -42,7 +42,7 @@ test('getting resource', async () => {
   }
 });
 
-test('streaming', async () => {
+test('streaming user model', async () => {
   const lh = createLighthouse(function* (msg) {
     if (msg.VERB === 'STREAM' && isEqual(msg.PATH, ['user', 'test', 'model'])) {
       for (let i = 0; i < 4; i++) {
