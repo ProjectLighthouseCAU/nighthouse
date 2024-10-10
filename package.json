@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc -b tsconfig.json",
     "watch": "tsc -b tsconfig.json -w",
+    "test": "node --import tsx --test-reporter spec --test src/__tests__/**/*.test.ts",
     "prepare": "npm run build",
     "generate-docs": "typedoc"
   },
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
+    "tsx": "^4.19.1",
     "typedoc": "^0.24.8",
     "typescript": "^5.1.6"
   },
