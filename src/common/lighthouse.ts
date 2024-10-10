@@ -50,7 +50,7 @@ export class Lighthouse {
 
   /** Streams the user's model (including e.g. key/controller events). */
   async *streamModel(user: string = this.auth.USER): AsyncIterable<ServerMessage<unknown>> {
-    yield* this.stream(['user', user, 'model'], {});
+    yield* this.stream(['user', user, 'model']);
   }
 
   /** Fetches lamp server metrics. */
@@ -110,8 +110,8 @@ export class Lighthouse {
   }
 
   /** Performs a streaming request to the given path with the given payload. */
-  async *stream<T>(path: string[], payload: T): AsyncIterable<ServerMessage<unknown>> {
-    const requestId = await this.sendRequest('STREAM', path, payload);
+  async *stream<T>(path: string[], payload?: T): AsyncIterable<ServerMessage<unknown>> {
+    const requestId = await this.sendRequest('STREAM', path, payload ?? {});
     try {
       this.logger.debug(() => `Starting stream from ${JSON.stringify(path)}...`);
       yield* this.receiveStreaming(requestId);
