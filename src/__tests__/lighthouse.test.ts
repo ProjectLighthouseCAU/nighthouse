@@ -1,4 +1,4 @@
-import { expect, jest, test } from '@jest/globals';
+import { expect, test } from '@jest/globals';
 import { MessagePackCoder } from '../common/coder';
 import { Lighthouse } from '../common/lighthouse';
 import { ConsoleLogHandler, Logger } from '../common/log';
