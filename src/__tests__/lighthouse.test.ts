@@ -5,8 +5,9 @@ import { ConsoleLogHandler, Logger } from '../common/log';
 import { Auth, ClientMessage, ServerMessage } from '../common/protocol';
 import { TestTransport } from "./transport";
 import { isEqual } from "./utils";
+import { LighthouseResponseError } from '../common/error';
 
-function createLighthouse(responder: (msg: ClientMessage<unknown>) => ServerMessage<any>) {
+function createLighthouse(responder: (msg: ClientMessage<unknown>) => Iterable<ServerMessage<any>>) {
   const auth: Auth = { USER: 'test', TOKEN: 'test' };
   const coder = new MessagePackCoder();
   const logger = new Logger(new ConsoleLogHandler());
@@ -15,21 +16,28 @@ function createLighthouse(responder: (msg: ClientMessage<unknown>) => ServerMess
 }
 
 test('getting resource', async () => {
-  const lh = createLighthouse(msg => {
+  const lh = createLighthouse(function* (msg) {
     if (isEqual(msg.PATH, ['hello'])) {
-      return {
+      yield {
         REID: msg.REID,
         RNUM: 200,
         PAYL: 'Hello world!',
       };
     } else {
-      return {
+      yield {
         REID: msg.REID,
         RNUM: 400,
         PAYL: {},
       }
     }
   });
+
   expect((await lh.get(['hello'])).PAYL).toBe('Hello world!');
-  expect(async () => await lh.get(['something', 'else'])).rejects.toThrow();
+
+  try {
+    await lh.get(['something', 'else']);
+    throw new Error('Should not resolve');
+  } catch (error) {
+    expect(error).toBeInstanceOf(LighthouseResponseError);
+  }
 });

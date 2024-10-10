@@ -6,15 +6,16 @@ export class TestTransport<T, U> implements Transport {
 
   constructor(
     private coder: Coder,
-    private responder: (value: T) => U
+    private responder: (value: T) => Iterable<U>
   ) {}
 
   async send(rawMessage: Uint8Array): Promise<void> {
     const message = this.coder.decode(rawMessage);
-    const response = this.responder(message);
-    const rawResponse = this.coder.encode(response);
-    for (const handler of this.handlers) {
-      handler(rawResponse);
+    for (const response of this.responder(message)) {
+      const rawResponse = this.coder.encode(response);
+      for (const handler of this.handlers) {
+        handler(rawResponse);
+      }
     }
   }
 
