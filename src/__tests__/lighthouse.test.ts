@@ -30,6 +30,6 @@ test('getting resource', async () => {
       }
     }
   });
-  expect(await lh.get(['hello'])).toBe('Hello world!');
-  expect(async () => await lh.get(['something', 'else'])).toThrow();
+  expect((await lh.get(['hello'])).PAYL).toBe('Hello world!');
+  expect(async () => await lh.get(['something', 'else'])).rejects.toThrow();
 });
