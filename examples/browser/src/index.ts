@@ -54,7 +54,7 @@ async function connectToLighthouse(url: string, auth: Auth, view: HTMLCanvasElem
   logger.info('Connected!');
 
   // Register event handlers
-  const stream = lh.streamModel();
+  const stream = await lh.streamModel();
   (async () => {
     try {
       for await (const event of stream) {
