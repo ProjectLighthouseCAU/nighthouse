@@ -14,6 +14,9 @@ export class Lighthouse {
   /** Handlers for response messages. */
   private responseHandlers: Map<number, Deferred<ServerMessage<unknown>>> = new Map();
 
+  /** Out-of-order received messages, e.g. if a response is faster than the response handler is registered. */
+  private outOfOrderMessages: Map<number, ServerMessage<unknown>[]> = new Map();
+
   /** Whether the transport has been closed. */
   private isClosed = false;
 
@@ -149,13 +152,11 @@ export class Lighthouse {
       throw new LighthouseClosedError(`Cannot receive message for id ${id} after lighthouse connection has been closed`);
     }
 
-    const deferred = new Deferred<ServerMessage<unknown>>();
-
     this.logger.trace(`Registering handler for ${id}`);
-    this.responseHandlers.set(id, deferred);
+    const responsePromise = this.receiveResponse(id);
 
     try {
-      const message = await deferred.promise;
+      const message = await responsePromise;
       if (message.RNUM === 200) {
         return message;
       } else {
@@ -179,13 +180,12 @@ export class Lighthouse {
       const pushPromise = () => {
         this.logger.trace(`Pushing promise for next response to request ${id}`);
 
-        const responseHandler = new Deferred<ServerMessage<unknown>>();
-        this.responseHandlers.set(id, responseHandler);
+        const responsePromise = this.receiveResponse(id);
 
         const nextDeferred = new Deferred<ServerMessage<unknown>>();
         nextPromises.push(nextDeferred.promise);
 
-        responseHandler.promise
+        responsePromise
           .then(response => {
             pushPromise();
             nextDeferred.resolve(response);
@@ -209,15 +209,35 @@ export class Lighthouse {
     }
   }
 
+  private receiveResponse(id: number): Promise<ServerMessage<unknown>> {
+    const responseHandler = new Deferred<ServerMessage<unknown>>();
+    const outOfOrderMessage = this.outOfOrderMessages.get(id)?.shift();
+
+    if (outOfOrderMessage) {
+      // Response was already received, return it
+      responseHandler.resolve(outOfOrderMessage);
+      if (this.outOfOrderMessages.get(id).length === 0) {
+        this.outOfOrderMessages.delete(id);
+      }
+    } else {
+      // Register handler to await future response
+      this.responseHandlers.set(id, responseHandler);
+    }
+
+    return responseHandler.promise;
+  }
+
   /** Handles a server message. */
   private async handle(message: ServerMessage<unknown>): Promise<void> {
-    const responseHandler = this.responseHandlers.get(message.REID);
+    const id = message.REID;
+    const responseHandler = this.responseHandlers.get(id);
     if (responseHandler) {
       // A response handler exists, invoke it.
       responseHandler.resolve(message);
     } else {
-      // No response handler exists, warn about it.
-      this.logger.warning(`Got unhandled event for id ${message.REID}`);
+      // No response handler exists (yet?), warn about it.
+      this.logger.warning(`Got out-of-order event for id ${id}`);
+      this.outOfOrderMessages.set(id, [...(this.outOfOrderMessages.get(id) ?? []), message]);
     }
   }
 
