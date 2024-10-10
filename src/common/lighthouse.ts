@@ -70,27 +70,27 @@ export class Lighthouse {
 
   /** Creates a resource at the given path. Requires CREATE permission. */
   async create(path: string[]): Promise<ServerMessage<unknown>> {
-    return await this.perform('CREATE', path, {});
+    return await this.perform('CREATE', path);
   }
 
   /** Deletes a resource at the given path. Requires DELETE permission. */
   async delete(path: string[]): Promise<ServerMessage<unknown>> {
-    return await this.perform('DELETE', path, {});
+    return await this.perform('DELETE', path);
   }
 
   /** Creates a directory at the given path. Requires CREATE permission. */
   async mkdir(path: string[]): Promise<ServerMessage<unknown>> {
-    return await this.perform('MKDIR', path, {});
+    return await this.perform('MKDIR', path);
   }
 
   /** Lists the directory tree at the given path. Requires READ permission. */
   async list(path: string[]): Promise<ServerMessage<unknown>> {
-    return await this.perform('LIST', path, {});
+    return await this.perform('LIST', path);
   }
 
   /** Gets the resource at the given path. Requires READ permission. */
   async get(path: string[]): Promise<ServerMessage<unknown>> {
-    return await this.perform('GET', path, {});
+    return await this.perform('GET', path);
   }
 
   /** Links the given source to the given destination path. Requires WRITE permission for the destination and READ for the source. */
@@ -104,8 +104,8 @@ export class Lighthouse {
   }
 
   /** Performs a single request to the given path with the given payload. */
-  async perform<T>(verb: SingleVerb, path: string[], payload: T): Promise<ServerMessage<unknown>> {
-    const requestId = await this.sendRequest(verb, path, payload);
+  async perform<T>(verb: SingleVerb, path: string[], payload?: T): Promise<ServerMessage<unknown>> {
+    const requestId = await this.sendRequest(verb, path, payload ?? {});
     return await this.receiveSingle(requestId);
   }
 
