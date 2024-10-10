@@ -4,7 +4,7 @@ import { Lighthouse } from '../common/lighthouse';
 import { ConsoleLogHandler, Logger } from '../common/log';
 import { Auth, ClientMessage, ServerMessage } from '../common/protocol';
 import { TestTransport } from "./transport";
-import { isEqual } from "./utils";
+import { collectAsyncIterable, isEqual } from "./utils";
 import { LighthouseResponseError } from '../common/error';
 
 function createLighthouse(responder: (msg: ClientMessage<unknown>) => Iterable<ServerMessage<any>>) {
@@ -61,12 +61,6 @@ test('streaming user model', async () => {
     }
   });
 
-  const payloads: unknown[] = [];
-  for await (const response of lh.streamModel('test')) {
-    payloads.push(response.PAYL);
-    if (payloads.length >= 4) {
-      break;
-    }
-  }
+  const payloads = (await collectAsyncIterable(lh.streamModel('test'), 4)).map(msg => msg.PAYL);
   expect(payloads).toStrictEqual(['Message 0', 'Message 1', 'Message 2', 'Message 3']);
 });
