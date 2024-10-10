@@ -56,3 +56,27 @@ test('streaming user model', async () => {
   const payloads = (await collectAsyncIterable(lh.streamModel('test'), 4)).map(msg => msg.PAYL);
   expect(payloads).toStrictEqual(['Message 0', 'Message 1', 'Message 2', 'Message 3']);
 });
+
+
+test('streaming same resource multiple times', async () => {
+  const lh = createLighthouse(function* (msg) {
+    if (msg.VERB === 'STREAM' && isEqual(msg.PATH, ['test-stream'])) {
+      for (let i = 0; i < 4; i++) {
+        yield okResponse(msg.REID, `Message ${i}`);
+      }
+    } else {
+      yield errorResponse(msg.REID);
+    }
+  });
+
+  const streams = [...Array(3)].map(() => lh.stream(['test-stream'])[Symbol.asyncIterator]());
+
+  for (let i = 0; i < 4; i++) {
+    console.log(`Checking stream message ${i}`);
+    for (const stream of streams) {
+      const message = (await stream.next()).value;
+      const payload = message.PAYL;
+      expect(payload).toBe(`Message ${i}`);
+    }
+  }
+});
