@@ -17,7 +17,7 @@ function createLighthouse(responder: (msg: ClientMessage<unknown>) => Iterable<S
 
 test('getting resource', async () => {
   const lh = createLighthouse(function* (msg) {
-    if (isEqual(msg.PATH, ['hello'])) {
+    if (msg.VERB === 'GET' && isEqual(msg.PATH, ['hello'])) {
       yield {
         REID: msg.REID,
         RNUM: 200,
@@ -40,4 +40,33 @@ test('getting resource', async () => {
   } catch (error) {
     expect(error).toBeInstanceOf(LighthouseResponseError);
   }
+});
+
+test('streaming', async () => {
+  const lh = createLighthouse(function* (msg) {
+    if (msg.VERB === 'STREAM' && isEqual(msg.PATH, ['user', 'test', 'model'])) {
+      for (let i = 0; i < 4; i++) {
+        yield {
+          REID: msg.REID,
+          RNUM: 200,
+          PAYL: `Message ${i}`,
+        };
+      }
+    } else {
+      yield {
+        REID: msg.REID,
+        RNUM: 400,
+        PAYL: {},
+      }
+    }
+  });
+
+  const payloads: unknown[] = [];
+  for await (const response of lh.streamModel('test')) {
+    payloads.push(response.PAYL);
+    if (payloads.length >= 4) {
+      break;
+    }
+  }
+  expect(payloads).toStrictEqual(['Message 0', 'Message 1', 'Message 2', 'Message 3']);
 });
