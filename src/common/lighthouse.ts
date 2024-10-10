@@ -61,8 +61,8 @@ export class Lighthouse {
   }
 
   /** Streams the user's model (including e.g. key/controller events). */
-  async *streamModel(user: string = this.auth.USER): AsyncIterable<ServerMessage<unknown>> {
-    yield* this.stream(['user', user, 'model']);
+  async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
+    return this.stream(['user', user, 'model']);
   }
 
   /** Fetches lamp server metrics. */
@@ -122,40 +122,44 @@ export class Lighthouse {
   }
 
   /** Performs a streaming request to the given path with the given payload. */
-  async *stream<T>(path: string[], payload?: T): AsyncIterable<ServerMessage<unknown>> {
+  async stream<T>(path: string[], payload?: T): Promise<AsyncIterable<ServerMessage<unknown>>> {
     const key = JSON.stringify(path);
     let requestId: number;
 
-    if (this.streamsByPath.has(key)) {
+    if (this.streamsByPath.has(key) && this.streamsByPath.get(key).requestIds.length > 0) {
       // This path is already being streamed, we only need to add a handler and
       // don't send a `STREAM` request. This request id in this case is only
       // for tracking our client-side handler and not sent to the server.
       requestId = this.requestId++;
       const stream = this.streamsByPath.get(key)
+      this.logger.trace(() => `Adding new demuxed stream ${requestId} for ${JSON.stringify(path)} (also streaming this resource: ${JSON.stringify(stream.requestIds)})...`);
       this.streamsByPath.set(key, { ...stream, requestIds: [...stream.requestIds, requestId] });
     } else {
       // This path has not been streamed yet.
       requestId = await this.sendRequest('STREAM', path, payload ?? {});
+      this.logger.trace(() => `Registering new stream ${requestId} from ${JSON.stringify(path)}...`);
       this.streamsByPath.set(key, { requestIds: [requestId] });
     }
 
-    try {
-      this.logger.debug(() => `Starting stream from ${JSON.stringify(path)}...`);
-      yield* this.receiveStreaming(requestId);
-    } finally {
-      const sr = this.streamsByPath.get(key);
-      if (sr.requestIds.length > 1) {
-        // This path is still being streamed by another consumer
-        // TODO: Assert that sr.requestIds contains our request id (once)
-        this.streamsByPath.set(key, { requestIds: sr.requestIds.filter(id => id !== requestId) });
-      } else {
-        // We were the last consumer to stream this path, so we can stop it
-        // TODO: Assert that length === 1 and that this is exactly our request id
-        this.logger.debug(() => `Stopping stream from ${JSON.stringify(path)}...`);
-        await this.sendRequest('STOP', path, {});
-        this.streamsByPath.delete(key);
+    return (async function* () {
+      try {
+        this.logger.debug(() => `Starting stream from ${JSON.stringify(path)}...`);
+        yield* this.receiveStreaming(requestId);
+      } finally {
+        const sr = this.streamsByPath.get(key);
+        if (sr.requestIds.length > 1) {
+          // This path is still being streamed by another consumer
+          // TODO: Assert that sr.requestIds contains our request id (once)
+          this.streamsByPath.set(key, { requestIds: sr.requestIds.filter(id => id !== requestId) });
+        } else {
+          // We were the last consumer to stream this path, so we can stop it
+          // TODO: Assert that length === 1 and that this is exactly our request id
+          this.logger.debug(() => `Stopping stream from ${JSON.stringify(path)}...`);
+          await this.sendRequest('STOP', path, {});
+          this.streamsByPath.delete(key);
+        }
       }
-    }
+    }).bind(this)();
   }
 
   /** Sends a request. */
@@ -266,15 +270,17 @@ export class Lighthouse {
 
   /** Handles a server message. */
   private async handle(message: ServerMessage<unknown>): Promise<void> {
-    const id = message.REID;
-    const responseHandler = this.responseHandlers.get(id);
+    const responseHandler = this.responseHandlers.get(message.REID);
     if (responseHandler) {
       // A response handler exists, invoke it.
       responseHandler.resolve(message);
     } else {
       // No response handler exists (yet?), warn about it.
-      this.logger.warning(`Got out-of-order event for id ${id}`);
-      this.outOfOrderMessages.set(id, [...(this.outOfOrderMessages.get(id) ?? []), message]);
+      const demuxedIds: number[] = [...this.streamsByPath.values()].find(s => s.requestIds.includes(message.REID))?.requestIds ?? [message.REID];
+      this.logger.warning(() => `Got out-of-order event for id ${message.REID}${demuxedIds.length > 1 ? ` (demuxed to ${JSON.stringify(demuxedIds)})` : ''}`);
+      for (const id of demuxedIds) {
+        this.outOfOrderMessages.set(id, [...(this.outOfOrderMessages.get(id) ?? []), message]);
+      }
     }
   }
 
