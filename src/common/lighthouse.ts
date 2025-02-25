@@ -2,7 +2,6 @@ import { Transport } from "./transport";
 import { Auth, ClientMessage, InputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
-import { LaserMetrics } from "./protocol/metrics";
 import { Deferred } from "./deferred";
 import { LighthouseClosedError, LighthouseResponseError } from "./error";
 
@@ -65,11 +64,6 @@ export class Lighthouse {
   /** Streams the user's model (including e.g. key/controller events). */
   async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
     return this.stream(['user', user, 'model']);
-  }
-
-  /** Fetches lamp server metrics. */
-  async getLaserMetrics(): Promise<ServerMessage<LaserMetrics>> {
-    return await this.get(['metrics', 'laser']) as ServerMessage<LaserMetrics>;
   }
 
   /** Combines PUT and CREATE. Requires CREATE and WRITE permission. */
