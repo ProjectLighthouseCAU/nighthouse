@@ -233,7 +233,7 @@ export class Lighthouse {
             pushPromise();
             nextDeferred.resolve(response);
           })
-          .catch(nextDeferred.reject);
+          .catch(nextDeferred.reject.bind(nextDeferred));
       }
 
       pushPromise();
