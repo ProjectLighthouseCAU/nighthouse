@@ -7,9 +7,9 @@ export class Deferred<T> {
 
   constructor() {
     this.promise = new Promise((resolve, reject) => {
-      this._resolve = resolve;
-      this._reject = reject;
-    })
+      this._resolve = value => resolve(value);
+      this._reject = reason => reject(reason);
+    });
   }
 
   resolve(value: T): void {
