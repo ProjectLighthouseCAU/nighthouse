@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, InputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
+import { Auth, ClientMessage, DirectoryTree, InputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 import { Deferred } from "./deferred";
@@ -92,8 +92,8 @@ export class Lighthouse {
   }
 
   /** Lists the directory tree at the given path. Requires READ permission. */
-  async list(path: string[]): Promise<ServerMessage<unknown>> {
-    return await this.perform('LIST', path);
+  async list(path: string[]): Promise<ServerMessage<DirectoryTree>> {
+    return (await this.perform('LIST', path)) as ServerMessage<DirectoryTree>;
   }
 
   /** Gets the resource at the given path. Requires READ permission. */
