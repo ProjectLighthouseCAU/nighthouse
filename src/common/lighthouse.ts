@@ -194,7 +194,7 @@ export class Lighthouse {
 
     try {
       const message = await responsePromise;
-      if (message.RNUM === 200) {
+      if (message.RNUM >= 200 && message.RNUM < 300) {
         return message;
       } else {
         throw new LighthouseResponseError(id, message);
