@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, DirectoryTree, InputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
+import { Auth, ClientMessage, DirectoryTree, LegacyInputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 import { Deferred } from "./deferred";
@@ -57,7 +57,7 @@ export class Lighthouse {
   }
 
   /** Sends a frame or an input event to the user's model. */
-  async putModel(payload: Uint8Array | InputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
+  async putModel(payload: Uint8Array | LegacyInputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
     return await this.put(['user', user, 'model'], payload);
   }
 
