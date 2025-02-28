@@ -29,18 +29,35 @@ export interface MouseEvent extends BaseInputEvent<'mouse'> {
   };
 }
 
-/** A gamepad/controller payload. */
-export interface GamepadEvent extends BaseInputEvent<'gamepad'> {
-  /** The buttons, modeled after the Web Gamepad API. */
-  buttons: {
-    /** Whether the button is pressed. */
-    pressed: boolean;
-    /** The button's value, between 0.0 and 1.0. */
-    value: number;
-  }[];
-  /** The axes as a list of floats between -1.0 and 1.0, modeled after the Web Gamepad API. */
-  axes: number[];
+/** Base type for gamepad/controller payloads. */
+interface BaseGamepadEvent<Control extends string> extends BaseInputEvent<'gamepad'> {
+  /** The type of control. */
+  control: Control;
+  /**
+   * The (control-specific) index of the control.
+   * 
+   * This corresponds to the standard layout specified in
+   * https://www.w3.org/TR/gamepad/#dfn-standard-gamepad.
+   */
+  index: number;
 }
+
+/** A button event on the gamepad. */
+export interface GamepadButtonEvent extends BaseGamepadEvent<'button'> {
+  /** Whether the button is pressed. */
+  down: boolean;
+  /** The value of the button (between 0.0 and 1.0, modeled after the Web Gamepad API) */
+  value: number;
+}
+
+/** An axis event on the gamepad. */
+export interface GamepadAxisEvent extends BaseGamepadEvent<'axis'> {
+  /** The value of the axis (between -1.0 and 1.0, modeled after the Web Gamepad API) */
+  value: number;
+}
+
+/** A game/controller event payload. */
+export type GamepadEvent = GamepadButtonEvent | GamepadAxisEvent;
 
 /** An input event payload. */
 export type InputEvent = KeyEvent | MouseEvent | GamepadEvent;
