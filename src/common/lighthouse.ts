@@ -62,9 +62,11 @@ export class Lighthouse {
   }
 
   /**
-   * Sends an input event to the user's input endpoint. Note that this is the
-   * new API which not all clients may support. If your client or library does
-   * not support this, you may need to use `putModel` with a `LegacyInputEvent`.
+   * Sends an input event to the user's input endpoint.
+   * 
+   * Note that this is the new API which not all clients may support. If your
+   * client or library does not support this, you may need to use `putModel`
+   * with a `LegacyInputEvent`.
    */
   async putInput(payload: InputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
     return await this.put(['user', user, 'input'], payload);
@@ -73,6 +75,18 @@ export class Lighthouse {
   /** Streams the user's model (including e.g. key/controller events). */
   async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
     return this.stream(['user', user, 'model']);
+  }
+
+  /**
+   * Streams the user's input (including e.g. key/controller events).
+   * 
+   * Note that this is the new API which not all clients may support (in LUNA
+   * disabling the legacy mode will send events to this endpoint). If your
+   * client or library does not support this, you may need to `streamModel` and
+   * read `LegacyInputEvent`s.
+   */
+  async streamInput(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<InputEvent>>> {
+    return (await this.stream(['user', user, 'input'])) as AsyncIterable<ServerMessage<InputEvent>>;
   }
 
   /** Combines PUT and CREATE. Requires CREATE and WRITE permission. */
