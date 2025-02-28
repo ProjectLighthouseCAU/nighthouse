@@ -74,7 +74,7 @@ export class Lighthouse {
 
   /** Streams the user's model (including e.g. key/controller events). */
   async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
-    return this.stream(['user', user, 'model']);
+    return await this.stream(['user', user, 'model']);
   }
 
   /**
