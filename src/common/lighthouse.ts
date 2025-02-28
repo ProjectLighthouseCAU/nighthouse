@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, DirectoryTree, InputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
+import { Auth, ClientMessage, DirectoryTree, LegacyInputEvent, isServerMessage, ServerMessage, SingleVerb, Verb, InputEvent } from "./protocol";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 import { Deferred } from "./deferred";
@@ -56,14 +56,37 @@ export class Lighthouse {
     await this.transport.ready();
   }
 
-  /** Sends a frame or an input event to the user's model. */
-  async putModel(payload: Uint8Array | InputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
+  /** Sends a frame or a legacy input event to the user's model. */
+  async putModel(payload: Uint8Array | LegacyInputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
     return await this.put(['user', user, 'model'], payload);
+  }
+
+  /**
+   * Sends an input event to the user's input endpoint.
+   * 
+   * Note that this is the new API which not all clients may support. If your
+   * client or library does not support this, you may need to use `putModel`
+   * with a `LegacyInputEvent`.
+   */
+  async putInput(payload: InputEvent, user: string = this.auth.USER): Promise<ServerMessage<unknown>> {
+    return await this.put(['user', user, 'input'], payload);
   }
 
   /** Streams the user's model (including e.g. key/controller events). */
   async streamModel(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<unknown>>> {
-    return this.stream(['user', user, 'model']);
+    return await this.stream(['user', user, 'model']);
+  }
+
+  /**
+   * Streams the user's input (including e.g. key/controller events).
+   * 
+   * Note that this is the new API which not all clients may support (in LUNA
+   * disabling the legacy mode will send events to this endpoint). If your
+   * client or library does not support this, you may need to `streamModel` and
+   * read `LegacyInputEvent`s.
+   */
+  async streamInput(user: string = this.auth.USER): Promise<AsyncIterable<ServerMessage<InputEvent>>> {
+    return (await this.stream(['user', user, 'input'])) as AsyncIterable<ServerMessage<InputEvent>>;
   }
 
   /** Combines PUT and CREATE. Requires CREATE and WRITE permission. */
