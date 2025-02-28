@@ -1,5 +1,5 @@
 import { Transport } from "./transport";
-import { Auth, ClientMessage, DirectoryTree, LegacyInputEvent, isServerMessage, ServerMessage, SingleVerb, Verb } from "./protocol";
+import { Auth, ClientMessage, DirectoryTree, LegacyInputEvent, isServerMessage, ServerMessage, SingleVerb, Verb, InputEvent } from "./protocol";
 import { Logger, NoopLogHandler } from "./log";
 import { Coder, MessagePackCoder } from "./coder";
 import { Deferred } from "./deferred";

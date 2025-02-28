@@ -1,5 +1,5 @@
 import * as nighthouse from "nighthouse/node";
-import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, LeveledLogHandler, LogLevel, Logger, isInputEvent } from "nighthouse/node";
+import { ConsoleLogHandler, LIGHTHOUSE_WINDOWS, LeveledLogHandler, LogLevel, Logger, isLegacyInputEvent } from "nighthouse/node";
 import * as process from "process";
 
 const logger = new Logger(new LeveledLogHandler(LogLevel.Debug, new ConsoleLogHandler()));
@@ -31,7 +31,7 @@ function getEnv(name: string): string {
   (async () => {
     for await (const event of await lh.streamModel()) {
       const payload = event.PAYL;
-      if (isInputEvent(payload)) {
+      if (isLegacyInputEvent(payload)) {
         logger.info(`Got event ${JSON.stringify(payload)}`);
       }
     }
