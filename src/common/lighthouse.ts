@@ -134,13 +134,15 @@ export class Lighthouse {
       yield* this.receiveStreaming(requestId);
     } finally {
       this.logger.debug(() => `Stopping stream from ${JSON.stringify(path)}...`);
-      await this.sendRequest('STOP', path, {});
+      await this.sendRequest('STOP', path, {}, { requestId });
     }
   }
 
   /** Sends a request. */
-  private async sendRequest<T>(verb: Verb, path: string[], payload: T): Promise<number> {
-    const requestId = this.requestId++;
+  private async sendRequest<T>(verb: Verb, path: string[], payload: T, { requestId }: { requestId?: number } = {}): Promise<number> {
+    if (requestId === undefined) {
+      requestId = this.requestId++;
+    }
     const message: ClientMessage<T> = {
       AUTH: this.auth,
       REID: requestId,
