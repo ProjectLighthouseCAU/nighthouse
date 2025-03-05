@@ -14,14 +14,20 @@ export interface KeyEvent extends BaseInputEvent<'key'> {
   repeat: boolean;
   /** The key pressed, see the docs on JS's `KeyboardEvent.code` for a description. */
   code: string;
+  /** The held modifiers. */
+  modifiers: KeyModifiers;
+}
+
+/** The held modifiers. */
+export interface KeyModifiers {
   /** Whether the alt key is held. */
-  altKey: boolean;
+  alt: boolean;
   /** Whether the ctrl key is held. */
-  ctrlKey: boolean;
+  ctrl: boolean;
   /** Whether the meta key is held. */
-  metaKey: boolean;
+  meta: boolean;
   /** Whether the shiftKey key is held. */
-  shiftKey: boolean;
+  shift: boolean;
 }
 
 /** A mouse event payload. */
