@@ -52,8 +52,18 @@ interface BaseGamepadEvent<Control extends string> extends BaseInputEvent<'gamep
   /**
    * The (control-specific) index of the control.
    * 
-   * This corresponds to the standard layout specified in
+   * Buttons correspond to the standard layout specified in
    * https://www.w3.org/TR/gamepad/#dfn-standard-gamepad.
+   * 
+   * Axes are mapped slightly differently:
+   * 
+   * | Web API Standard Gamepad    | This API       |
+   * | --------------------------- | -------------- |
+   * | Axis 0 (left stick x-axis)  | Axis2D 0       |
+   * | Axis 1 (left stick y-axis)  | Axis2D 0       |
+   * | Axis 2 (right stick x-axis) | Axis2D 1       |
+   * | Axis 3 (right stick y-axis) | Axis2D 1       |
+   * | Axis n (for n >= 4)         | Axis   (n - 4) |
    */
   index: number;
 }
