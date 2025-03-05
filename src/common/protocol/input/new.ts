@@ -66,14 +66,25 @@ export interface GamepadButtonEvent extends BaseGamepadEvent<'button'> {
   value: number;
 }
 
-/** An axis event on the gamepad. */
+/** A 1D axis event on the gamepad. */
 export interface GamepadAxisEvent extends BaseGamepadEvent<'axis'> {
   /** The value of the axis (between -1.0 and 1.0, modeled after the Web Gamepad API) */
   value: number;
 }
 
+/** A 2D axis event on the gamepad. */
+export interface GamepadAxis2DEvent extends BaseGamepadEvent<'axis2d'> {
+  /** The 2D value of the axes. */
+  value: {
+    /** The value on the x-axis (between -1.0 and 1.0, modeled after the Web Gamepad API) */
+    x: number,
+    /** The value on the y-axis (between -1.0 and 1.0, modeled after the Web Gamepad API) */
+    y: number,
+  },
+}
+
 /** A game/controller event payload. */
-export type GamepadEvent = GamepadButtonEvent | GamepadAxisEvent;
+export type GamepadEvent = GamepadButtonEvent | GamepadAxisEvent | GamepadAxis2DEvent;
 
 /** An input event payload. */
 export type InputEvent = KeyEvent | MouseEvent | GamepadEvent;
