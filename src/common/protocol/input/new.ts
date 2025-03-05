@@ -10,8 +10,18 @@ interface BaseInputEvent<Type extends string> {
 export interface KeyEvent extends BaseInputEvent<'key'> {
   /** Whether the key was pressed. */
   down: boolean;
-  /** The key pressed, see the docs on JS's `KeyboardEvent.key` for a description. */
-  key: string;
+  /** Whether the event is a repeat event. */
+  repeat: boolean;
+  /** The key pressed, see the docs on JS's `KeyboardEvent.code` for a description. */
+  code: string;
+  /** Whether the alt key is held. */
+  altKey: boolean;
+  /** Whether the ctrl key is held. */
+  ctrlKey: boolean;
+  /** Whether the meta key is held. */
+  metaKey: boolean;
+  /** Whether the shiftKey key is held. */
+  shiftKey: boolean;
 }
 
 /** A mouse event payload. */
