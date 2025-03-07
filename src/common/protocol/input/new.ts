@@ -34,15 +34,24 @@ export interface KeyModifiers {
 export interface MouseEvent extends BaseInputEvent<'mouse'> {
   /** Whether the button was pressed. */
   down: boolean;
+  /** Whether the mouse pointer was locked (e.g. to the frontend's canvas). */
+  pointerLocked: boolean;
   /** The mouse button. */
   button: 'left' | 'middle' | 'right'; // TODO: Support more buttons
   /** The position. */
   pos: {
-    /** The x-coordinate in range 0-28. */
+    /** The x-coordinate in terms of lighthouse columns, i.e. in the range 0-28. */
     x: number;
-    /** The y-coordinate in range 0-14. */
+    /** The y-coordinate in terms of lighthouse rows, i.e. in the range 0-14. */
     y: number;
   };
+  /** The movement of the mouse position. Useful e.g. for pointer-locked apps like games. */
+  movement: {
+    /** The movement on the x-axis. Expressed in terms of lighthouse columns, but may be negative. */
+    x: number;
+    /** The movement on the y-axis. Expressed in terms of lighthouse rows, but may be negative. */
+    y: number;
+  },
 }
 
 /** Base type for gamepad/controller payloads. */
