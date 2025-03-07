@@ -34,6 +34,8 @@ export interface KeyModifiers {
 export interface MouseEvent extends BaseInputEvent<'mouse'> {
   /** Whether the button was pressed. */
   down: boolean;
+  /** Whether the mouse pointer was locked (e.g. to the frontend's canvas). */
+  pointerLocked: boolean;
   /** The mouse button. */
   button: 'left' | 'middle' | 'right'; // TODO: Support more buttons
   /** The position. */
