@@ -142,11 +142,11 @@ export interface OrientationEvent extends BaseInputEvent<'orientation'> {
   /** Whether the device provides absolute orientation data. */
   absolute: boolean;
   /** The motion of the device around the z-axis, in degrees from 0 (inclusive) to 360 (exclusive). */
-  alpha: number;
+  alpha: number | null;
   /** The motion of the device around the x-axis (front to back motion), in degrees from -180 (inclusive) to 180 (exclusive). */
-  beta: number;
+  beta: number | null;
   /** The motion of the device around the y-axis (left to right motion), in degrees from -90 (inclusive) to 90 (exclusive). */
-  gamma: number;
+  gamma: number | null;
 }
 
 /**
@@ -158,21 +158,21 @@ export interface MotionEvent extends BaseInputEvent<'motion'> {
   /** The acceleration of the device in m/s^2 (in 3D space). */
   acceleration: {
     /** The acceleration on the x-axis. */
-    x: number;
+    x: number | null;
     /** The acceleration on the y-axis. */
-    y: number;
+    y: number | null;
     /** The acceleration on the z-axis. */
-    z: number;
-  },
+    z: number | null;
+  } | null,
   /** The acceleration of the device, including gravity, in m/s^2 (in 3D space). */
   accelerationIncludingGravity: {
     /** The acceleration on the x-axis (west to east). */
-    x: number;
+    x: number | null;
     /** The acceleration on the y-axis (south to north). */
-    y: number;
+    y: number | null;
     /** The acceleration on the z-axis (down to up). */
-    z: number;
-  },
+    z: number | null;
+  } | null,
   /** The rotation rate in deg/s on the three rotation axes alpha, beta and gamma. */
   rotationRate: {
     /** The rate at which the device rotates about its z-axis (i.e. is twisted around a line perpendicular to its screen.) */
@@ -181,7 +181,7 @@ export interface MotionEvent extends BaseInputEvent<'motion'> {
     beta: number;
     /** The rate at which the device rotates about its y-axis (i.e. side to side) */
     gamma: number;
-  },
+  } | null,
   /** The granularity of these events in ms. */
   interval: number;
 }
