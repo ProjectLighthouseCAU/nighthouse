@@ -133,5 +133,58 @@ export interface MIDIEvent extends BaseInputEvent<'midi'> {
   data: Uint8Array;
 }
 
+/**
+ * A device orientation event payload.
+ * 
+ * Modeled after https://developer.mozilla.org/de/docs/Web/API/DeviceOrientationEvent.
+ */
+export interface OrientationEvent extends BaseInputEvent<'orientation'> {
+  /** Whether the device provides absolute orientation data. */
+  absolute: boolean;
+  /** The motion of the device around the z-axis, in degrees from 0 (inclusive) to 360 (exclusive). */
+  alpha: number;
+  /** The motion of the device around the x-axis (front to back motion), in degrees from -180 (inclusive) to 180 (exclusive). */
+  beta: number;
+  /** The motion of the device around the y-axis (left to right motion), in degrees from -90 (inclusive) to 90 (exclusive). */
+  gamma: number;
+}
+
+/**
+ * A device motion event payload.
+ * 
+ * Modeled after https://developer.mozilla.org/de/docs/Web/API/DeviceMotionEvent.
+ */
+export interface MotionEvent extends BaseInputEvent<'motion'> {
+  /** The acceleration of the device in m/s^2 (in 3D space). */
+  acceleration: {
+    /** The acceleration on the x-axis. */
+    x: number;
+    /** The acceleration on the y-axis. */
+    y: number;
+    /** The acceleration on the z-axis. */
+    z: number;
+  },
+  /** The acceleration of the device, including gravity, in m/s^2 (in 3D space). */
+  accelerationIncludingGravity: {
+    /** The acceleration on the x-axis (west to east). */
+    x: number;
+    /** The acceleration on the y-axis (south to north). */
+    y: number;
+    /** The acceleration on the z-axis (down to up). */
+    z: number;
+  },
+  /** The rotation rate in deg/s on the three rotation axes alpha, beta and gamma. */
+  rotationRate: {
+    /** The rate at which the device rotates about its z-axis (i.e. is twisted around a line perpendicular to its screen.) */
+    alpha: number;
+    /** The rate at which the device rotates about its x-axis (i.e. front to back) */
+    beta: number;
+    /** The rate at which the device rotates about its y-axis (i.e. side to side) */
+    gamma: number;
+  },
+  /** The granularity of these events in ms. */
+  interval: number;
+}
+
 /** An input event payload. */
-export type InputEvent = KeyEvent | MouseEvent | GamepadEvent | MIDIEvent;
+export type InputEvent = KeyEvent | MouseEvent | GamepadEvent | MIDIEvent | OrientationEvent | MotionEvent;
