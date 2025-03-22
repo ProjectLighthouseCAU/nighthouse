@@ -1,6 +1,6 @@
 {
   "name": "nighthouse",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Lightweight Project Lighthouse client for JavaScript",
   "workspaces": [
     "examples/*"
