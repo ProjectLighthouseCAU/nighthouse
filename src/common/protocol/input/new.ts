@@ -105,5 +105,33 @@ export interface GamepadAxis2DEvent extends BaseGamepadEvent<'axis2d'> {
 /** A game/controller event payload. */
 export type GamepadEvent = GamepadButtonEvent | GamepadAxisEvent | GamepadAxis2DEvent;
 
+/** A MIDI event payload. */
+export interface MIDIEvent extends BaseInputEvent<'midi'> {
+  /**
+   * The binary MIDI message.
+   * 
+   * The first byte is a status byte (first/most significant bit = 1), the
+   * remaining bytes are data bytes (first/most significant bit = 0).
+   * 
+   * To give a simple example, pressing C5 on a MIDI keyboard would generate the
+   * following message:
+   * 
+   *     [0x90,     0x48,     0x64]
+   *      Ch.1    Note 72   Velocity 100
+   *     NoteOn   i.e. C5
+   * 
+   * The note values can be looked up online:
+   * 
+   * - https://www.phys.unsw.edu.au/jw/notes.html
+   * 
+   * Same goes for a full description of the packet structure:
+   * 
+   * - https://www.w3.org/TR/webmidi/#terminology
+   * - http://www.opensound.com/pguide/midi/midi5.html
+   * - https://www.songstuff.com/recording/article/midi-message-format/
+   */
+  data: Uint8Array;
+}
+
 /** An input event payload. */
-export type InputEvent = KeyEvent | MouseEvent | GamepadEvent;
+export type InputEvent = KeyEvent | MouseEvent | GamepadEvent | MIDIEvent;
