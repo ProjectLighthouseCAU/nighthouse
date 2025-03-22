@@ -176,11 +176,11 @@ export interface MotionEvent extends BaseInputEvent<'motion'> {
   /** The rotation rate in deg/s on the three rotation axes alpha, beta and gamma. */
   rotationRate: {
     /** The rate at which the device rotates about its z-axis (i.e. is twisted around a line perpendicular to its screen.) */
-    alpha: number;
+    alpha: number | null;
     /** The rate at which the device rotates about its x-axis (i.e. front to back) */
-    beta: number;
+    beta: number | null;
     /** The rate at which the device rotates about its y-axis (i.e. side to side) */
-    gamma: number;
+    gamma: number | null;
   } | null,
   /** The granularity of these events in ms. */
   interval: number;
