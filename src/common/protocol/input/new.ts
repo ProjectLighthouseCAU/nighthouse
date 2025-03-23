@@ -140,7 +140,7 @@ export interface MIDIEvent extends BaseInputEvent<'midi'> {
  */
 export interface OrientationEvent extends BaseInputEvent<'orientation'> {
   /** Whether the device provides absolute orientation data. */
-  absolute: boolean;
+  absolute: boolean | null;
   /** The motion of the device around the z-axis, in degrees from 0 (inclusive) to 360 (exclusive). */
   alpha: number | null;
   /** The motion of the device around the x-axis (front to back motion), in degrees from -180 (inclusive) to 180 (exclusive). */
